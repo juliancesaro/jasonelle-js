@@ -2,43 +2,46 @@ body {
   background-color: #ffffff;
   border: none;
 }
-.components {
+.body-header {
+  padding: 50;
+}
+.components#components-1 {
   padding: 30;
   align-items: center;
 }
-#component1 {
+.component#component-1-1 {
   text-align: center;
   font-family: "Courier", Courier, monospace;
   font-weight: bold;
   font-size: 26;
 }
-#component2 {
+.component#component-1-2 {
   text-align: center;
   font-family: "Courier";
   padding: 30;
   font-size: 20;
 }
-#component3 {
+.component#component-1-3 {
   text-align: center;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: bold;
   font-size: 50;
 }
-#item2 {
+.item#item-1-2 {
   text-align: right;
   padding: 10;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #000000;
   font-size: 20;
 }
-#item3 {
+.item#item-1-3 {
   text-align: right;
   padding: 10;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #000000;
   font-size: 20;
 }
-#item4 {
+.item#item-1-4 {
   text-align: right;
   padding: 10;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
