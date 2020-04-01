@@ -1,3 +1,4 @@
+//Node creation
 var body = document.getElementById("add");
 
 var header = document.createElement("header");
@@ -70,6 +71,7 @@ label_1.textContent = "Check out Live DEMO";
 label_2.textContent = "Watch the tutorial video";
 label_3.textContent = "View documentation";
 
+//Tree building
 body.appendChild(header);
 
 body.appendChild(sections_1);
@@ -89,3 +91,46 @@ item_1_3.appendChild(label_2);
 
 items_1.appendChild(item_1_4);
 item_1_4.appendChild(label_3);
+
+//Styling
+body.style.backgroundColor = "#ffffff";
+body.style.border = "none";
+
+header.style.padding = "50";
+
+components_1.style.padding = "30";
+components_1.style.alignItems = "center";
+
+component_1_1.style.textAlign = "center";
+component_1_1.style.fontFamily = "'Courier', Courier, monospace";
+component_1_1.style.fontWeight = "bold";
+component_1_1.style.fontSize = "26";
+
+component_1_2.style.textAlign = "center";
+component_1_2.style.fontFamily = "'Courier', Courier, monospace";
+component_1_2.style.padding = "30";
+component_1_2.style.fontSize = "20";
+
+component_1_3.style.textAlign = "center";
+component_1_3.style.fontFamily =
+  "'Helvetica Neue', Helvetica, Arial, sans-serif";
+component_1_3.style.fontWeight = "bold";
+component_1_3.style.fontSize = "50";
+
+item_1_2.style.textAlign = "right";
+item_1_2.style.padding = "10";
+item_1_2.style.fontFamily = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+item_1_2.style.color = "#000000";
+item_1_2.style.fontSize = "20";
+
+item_1_3.style.textAlign = "right";
+item_1_3.style.padding = "10";
+item_1_3.style.fontFamily = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+item_1_3.style.color = "#000000";
+item_1_3.style.fontSize = "20";
+
+item_1_4.style.textAlign = "right";
+item_1_4.style.padding = "10";
+item_1_4.style.fontFamily = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+item_1_4.style.color = "#000000";
+item_1_4.style.fontSize = "20";
