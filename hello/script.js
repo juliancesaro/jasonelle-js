@@ -134,3 +134,45 @@ item_1_4.style.padding = "10";
 item_1_4.style.fontFamily = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 item_1_4.style.color = "#000000";
 item_1_4.style.fontSize = "20";
+
+var item = {
+  type: "label",
+  text: "It's Alive!",
+};
+
+var item2 = {
+  type: "label",
+  text: "Check out the live DEMO!",
+  href:
+    "https://raw.githubusercontent.com/jasonelle/docs/develop/examples/jasonette/apps/jasonpedia/demo.json",
+};
+
+function renderItems(items, target) {
+  const el = document.createElement("div");
+  for (const item of items) {
+    const inner = document.createElement("div");
+    //render each item
+  }
+}
+
+function renderItem(item, target) {
+  let element;
+  if (item.type === "label") {
+    element = document.createElement("label");
+    element.textContent = item.text;
+  } else if (item.type === "link") {
+    element = document.createElement("label");
+    element.textContent = item.text;
+    element.setAttribute("href", item.href);
+  }
+  target.appendChild(element);
+}
+
+function renderSections(sections, target) {
+  const el = document.createElement("div");
+  for (const section of sections) {
+    const inner = document.createElement("div");
+    el.appendChild(inner);
+  }
+  target.appendChild(el);
+}
