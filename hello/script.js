@@ -141,14 +141,20 @@ var sections = {};
 
 var item = {
   type: "label",
-  text: "It's Alive!",
+  text: "It's Alive!"
 };
 
 var item2 = {
-  type: "label",
+  type: "link",
   text: "Check out the live DEMO!",
   href:
-    "https://raw.githubusercontent.com/jasonelle/docs/develop/examples/jasonette/apps/jasonpedia/demo.json",
+    "https://raw.githubusercontent.com/jasonelle/docs/develop/examples/jasonette/apps/jasonpedia/demo.json"
+};
+
+var items = [item, item2, item, item2];
+
+var section = {
+  items: items
 };
 
 function renderItems(items, target) {
@@ -165,7 +171,7 @@ function renderItem(item, target) {
     element = document.createElement("label");
     element.textContent = item.text;
   } else if (item.type === "link") {
-    element = document.createElement("label");
+    element = document.createElement("a");
     element.textContent = item.text;
     element.setAttribute("href", item.href);
   }
@@ -184,7 +190,8 @@ function renderSections(sections, target) {
 
 function renderSection(section, target) {
   const el = document.createElement("div");
-  renderItems(section.items);
+  renderItems(section.items, target);
+  target.appendChild(el);
 }
 
-renderItem(item, body);
+renderSection(section, body);
