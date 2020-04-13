@@ -135,112 +135,149 @@
 // item_1_4.style.color = "#000000";
 // item_1_4.style.fontSize = "20";
 
-var body = document.getElementById("add");
+let body = document.getElementById("add");
 
-var item1 = {
+let item1 = {
   type: "label",
   text: "It's Alive!",
 };
 
-var item2 = {
+let item2 = {
   type: "label",
   text:
     "This is a demo app. You can make your own app by changing the url inside strings.xm",
 };
 
-var item3 = {
+let item3 = {
   type: "label",
   text: "{ ˃̵̑ᴥ˂̵̑}",
 };
 
-var item4 = {
+let item4 = {
   type: "link",
   text: "Check out the live DEMO!",
   href:
     "https://raw.githubusercontent.com/jasonelle/docs/develop/examples/jasonette/apps/jasonpedia/demo.json",
 };
 
-var item5 = {
+let item5 = {
   type: "link",
   text: "Watch the tutorial video",
   href: "https://www.youtube.com/watch?v=hfevBAAfCMQ",
 };
 
-var item6 = {
+let item6 = {
   type: "link",
   text: "View documentation",
   href: "https://jasonelle.com/docs",
 };
 
-var components1 = {
+let header = {};
+
+let components1 = {
   type: "vertical",
   components: [item1, item2, item3],
 };
 
-var items1 = [components1, item4, item5, item6];
+let items1 = [components1, item4, item5, item6];
 
-var section1 = {
+let section1 = {
   items: items1,
 };
 
-var sections1 = {
+let sections1 = {
   sections: [section1],
 };
 
-function renderComponents(components, target) {
-  for (let component of components) {
-    let element = document.createElement("div");
-    element.setAttribute("class", "item");
-    renderItem(component, element);
+renderHeader = (header, target) => {
+  if (header) {
+    let element = document.createElement("header");
+    element.setAttribute("class", "body-header");
     target.appendChild(element);
   }
-}
+};
 
-function renderItems(items, target) {
-  const element = document.createElement("div");
-  element.setAttribute("class", "items");
-  for (const item of items) {
-    const inner = document.createElement("div");
-    inner.setAttribute("class", "item");
-    renderItem(item, inner);
-    element.appendChild(inner);
+renderComponents = (components, target, num) => {
+  if (components) {
+    let i = 1;
+    for (let component of components) {
+      let element = document.createElement("div");
+      element.setAttribute("class", "component");
+      let id = "component-" + num + "-" + i;
+      element.setAttribute("id", id);
+      renderItem(component, element, i);
+      target.appendChild(element);
+      i++;
+    }
   }
-  target.appendChild(element);
-}
+};
 
-function renderItem(item, target) {
-  let element;
-  if (item.type === "label") {
-    element = document.createElement("label");
-    element.setAttribute("class", "label");
-    element.textContent = item.text;
-  } else if (item.type === "link") {
-    element = document.createElement("a");
-    element.setAttribute("class", "link");
-    element.textContent = item.text;
-    element.setAttribute("href", item.href);
-  } else if (item.type === "vertical") {
-    element = document.createElement("div");
-    element.setAttribute("class", "components");
-    renderComponents(item.components, element);
+renderItems = (items, target, num) => {
+  if (items) {
+    const element = document.createElement("div");
+    element.setAttribute("class", "items");
+    element.setAttribute("id", "items-" + num);
+    let i = 1;
+    for (const item of items) {
+      const inner = document.createElement("div");
+      inner.setAttribute("class", "item");
+      let id = "item-" + num + "-" + i;
+      inner.setAttribute("id", id);
+      renderItem(item, inner, i);
+      element.appendChild(inner);
+      i++;
+    }
+    target.appendChild(element);
   }
-  target.appendChild(element);
-}
+};
 
-function renderSections(sections, target) {
-  const element = document.createElement("div");
-  element.setAttribute("class", "sections");
-  for (const section of sections.sections) {
-    renderSection(section, element);
+renderItem = (item, target, num) => {
+  if (item) {
+    let element;
+    if (item.type === "label") {
+      element = document.createElement("label");
+      element.setAttribute("class", "label");
+      element.setAttribute("id", "label-" + num);
+      element.textContent = item.text;
+    } else if (item.type === "link") {
+      element = document.createElement("a");
+      element.setAttribute("class", "link");
+      element.setAttribute("id", "link-" + num);
+      element.textContent = item.text;
+      element.setAttribute("href", item.href);
+    } else if (item.type === "vertical") {
+      element = document.createElement("div");
+      element.setAttribute("class", "components");
+      element.setAttribute("id", "components-" + num);
+      renderComponents(item.components, element, num);
+    }
+    target.appendChild(element);
   }
-  target.appendChild(element);
-}
+};
 
-function renderSection(section, target) {
-  const element = document.createElement("div");
-  element.setAttribute("class", "section");
-  renderItems(section.items, element);
-  target.appendChild(element);
-}
+renderSections = (sections, target) => {
+  if (sections) {
+    const element = document.createElement("div");
+    element.setAttribute("class", "sections");
+    element.setAttribute("id", "sections");
+    let i = 1;
+    for (const section of sections.sections) {
+      renderSection(section, element, i);
+      i++;
+    }
+    target.appendChild(element);
+  }
+};
 
+renderSection = (section, target, num) => {
+  if (section) {
+    const element = document.createElement("div");
+    element.setAttribute("class", "section");
+    element.setAttribute("id", "section-" + num);
+    renderItems(section.items, element, num);
+    target.appendChild(element);
+  }
+};
+
+renderHeader(header, body);
 renderSections(sections1, body);
