@@ -1,0 +1,23 @@
+{
+  "name": "jasonelle-js",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node hellots/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juliancesaro/Jasonelle-JS.git"
+  },
+  "author": "Julian Cesaro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/juliancesaro/Jasonelle-JS/issues"
+  },
+  "homepage": "https://github.com/juliancesaro/Jasonelle-JS#readme",
+  "devDependencies": {
+    "@types/node": "^13.13.2"
+  }
+}
