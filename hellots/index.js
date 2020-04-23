@@ -2,8 +2,9 @@
 exports.__esModule = true;
 var data = require("./hello.json");
 var fs = require("fs");
-var foo = "<html><head></head><body><p>" +
-    JSON.stringify(data.$jason) +
-    "</p></body></html>";
-fs.writeFileSync("hellots/index.html", foo);
-//console.log(data.$jason.body);
+var p = "<p>" + JSON.stringify(data.$jason) + "</p>";
+var title = "<title>Jasonelle app</title>";
+var body = "<body>" + p + "</body>";
+var head = "<head>" + title + "</head>";
+var html = "<html>" + head + body + "</html>";
+fs.writeFileSync("hellots/index.html", html);
