@@ -1,0 +1,120 @@
+{
+  "$jason": {
+    "head": {
+      "title": "Citizen Science",
+      "actions": {
+        "$foreground": {
+          "type": "$reload"
+        }
+      }
+    },
+    "body": {
+      "header": {
+        "title": "Home",
+        "menu": {
+          "text": "Profile",
+          "style": {
+            "color": "#0000ff",
+            "font": "HelveticaNeue-Bold",
+            "size": "17",
+            "padding": "10"
+          },
+          "action": {
+            "type": "$util.toast",
+            "options": {
+              "text": "Coming soon..."
+            }
+          }
+        }
+      },
+      "style": {
+        "background": "#ffffff",
+        "border": "none"
+      },
+      "sections": [
+        {
+          "items": [
+            {
+              "type": "label",
+              "text": "Links",
+              "style": {
+                "align": "left",
+                "font": "Courier-Bold",
+                "padding": 10,
+                "size": 22
+              }
+            },
+            {
+              "type": "vertical",
+              "style": {
+                "spacing": 20,
+                "align": "center"
+              },
+              "components": [
+                {
+                  "type": "label",
+                  "style": {
+                    "align": "left",
+                    "color": "#000000",
+                    "font": "HelveticaNeue",
+                    "size": 20
+                  },
+                  "text": "Observations",
+                  "href": {
+                    "url": "https://raw.githubusercontent.com/juliancesaro/jasonette-apps-api/master/observationlist.json"
+                  }
+                },
+                {
+                  "type": "label",
+                  "style": {
+                    "align": "left",
+                    "color": "#000000",
+                    "font": "HelveticaNeue",
+                    "size": 20
+                  },
+                  "text": "Leaderboard - Coming soon...",
+                  "href": {
+                    "url": "https://jasonelle.com/docs",
+                    "view": "web",
+                    "options": {
+                      "reader": true
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "label",
+              "text": "Top 10 Observations",
+              "style": {
+                "align": "left",
+                "font": "Courier-Bold",
+                "padding": 10,
+                "size": 22
+              }
+            },
+            {
+              "type": "vertical",
+              "style": {
+                "spacing": 20,
+                "align": "center"
+              },
+              "components": [
+                {
+                  "type": "label",
+                  "style": {
+                    "align": "left",
+                    "color": "#000000",
+                    "font": "HelveticaNeue",
+                    "size": 20
+                  },
+                  "text": "Coming soon..."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
