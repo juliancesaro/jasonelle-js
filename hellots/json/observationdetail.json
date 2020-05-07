@@ -1,0 +1,142 @@
+{
+  "$jason": {
+    "head": {
+      "title": "Citizen Science",
+      "description": "Citizen Science observation detailed view",
+      "actions": {
+        "$pull": {
+          "trigger": "reload"
+        },
+        "$load": {
+          "trigger": "reload"
+        },
+        "reload": {
+          "type": "$network.request",
+          "options": {
+            "url": "https://my-json-server.typicode.com/stevecassidy/comp2110-api/observations"
+          },
+          "success": {
+            "type": "$render"
+          }
+        }
+      },
+      "templates": {
+        "body": {
+          "header": {
+            "title": "Observation {{$params.id}}",
+            "menu": {
+              "text": "Profile",
+              "style": {
+                "color": "#0000ff",
+                "font": "HelveticaNeue-Bold",
+                "size": "17",
+                "padding": "10"
+              },
+              "action": {
+                "type": "$util.toast",
+                "options": {
+                  "text": "Coming soon..."
+                }
+              }
+            }
+          },
+          "sections": {
+            "{{#each $jason}}": [
+              {
+                "{{#if (id=='3') }}": {
+                  "items": [
+                    {
+                      "type": "vertical",
+                      "components": [
+                        {
+                          "type": "label",
+                          "text": "Location: {{location}}",
+                          "style": {
+                            "font": "Courier",
+                            "size": 14
+                          }
+                        },
+                        {
+                          "type": "label",
+                          "text": "Timestamp: {{timestamp}}",
+                          "style": {
+                            "font": "Courier",
+                            "size": 14
+                          }
+                        },
+                        {
+                          "type": "label",
+                          "text": "Weather: {{weather}}",
+                          "style": {
+                            "font": "Courier",
+                            "size": 14
+                          }
+                        },
+                        {
+                          "type": "label",
+                          "text": "Wind: {{wind}}",
+                          "style": {
+                            "font": "Courier",
+                            "size": 14
+                          }
+                        },
+                        {
+                          "type": "label",
+                          "text": "Height: {{height}}",
+                          "style": {
+                            "font": "Courier",
+                            "size": 14
+                          }
+                        },
+                        {
+                          "type": "label",
+                          "text": "Girth: {{girth}}",
+                          "style": {
+                            "font": "Courier",
+                            "size": 14
+                          }
+                        },
+                        {
+                          "type": "label",
+                          "text": "Leaf size: {{leaf_size}}",
+                          "style": {
+                            "font": "Courier",
+                            "size": 14
+                          }
+                        },
+                        {
+                          "type": "label",
+                          "text": "Leaf shape: {{leaf_shape}}",
+                          "style": {
+                            "font": "Courier",
+                            "size": 14
+                          }
+                        },
+                        {
+                          "type": "label",
+                          "text": "Bark colour: {{bark_colour}}",
+                          "style": {
+                            "font": "Courier",
+                            "size": 14
+                          }
+                        },
+                        {
+                          "type": "label",
+                          "text": "Bark texture: {{bark_texture}}",
+                          "style": {
+                            "font": "Courier",
+                            "size": 14
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

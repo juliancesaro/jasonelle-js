@@ -1,13 +1,20 @@
 "use strict";
 exports.__esModule = true;
-var data = require("./main.json");
+var data = require("./hello.json");
 var fs = require("fs");
+//import { ANTLRInputStream, CommonTokenStream } from 'antlr4ts';
 for (var component in data.$jason) {
-    console.log(component);
-    if (component == "body") {
-        for (var _i = 0, component_1 = component; _i < component_1.length; _i++) {
-            var bodyComponent = component_1[_i];
-            console.log(bodyComponent);
+    switch (component) {
+        case "head": {
+            console.log("head");
+            break;
+        }
+        case "body": {
+            break;
+        }
+        default: {
+            console.log('default');
+            break;
         }
     }
 }

@@ -1,0 +1,343 @@
+{
+  "main": {
+    "$jason": {
+      "head": {
+        "title": "Citizen Science",
+        "actions": {
+          "$foreground": {
+            "type": "$reload"
+          }
+        }
+      },
+      "body": {
+        "header": {
+          "title": "Home",
+          "menu": {
+            "text": "Profile",
+            "style": {
+              "color": "#0000ff",
+              "font": "HelveticaNeue-Bold",
+              "size": "17",
+              "padding": "10"
+            },
+            "action": {
+              "type": "$util.toast",
+              "options": {
+                "text": "Good job!"
+              }
+            }
+          }
+        },
+        "style": {
+          "background": "#ffffff",
+          "border": "none"
+        },
+        "sections": [
+          {
+            "items": [
+              {
+                "type": "vertical",
+                "style": {
+                  "padding": 30,
+                  "spacing": 20,
+                  "align": "center"
+                },
+                "components": [
+                  {
+                    "type": "label",
+                    "style": {
+                      "align": "left",
+                      "color": "#000000",
+                      "font": "HelveticaNeue",
+                      "size": 20
+                    },
+                    "text": "Obervations",
+                    "href": {
+                      "url": "https://my-json-server.typicode.com/juliancesaro/jasonette-apps-api/observationlist",
+                      "view": "jason"
+                    }
+                  },
+                  {
+                    "type": "label",
+                    "style": {
+                      "align": "left",
+                      "color": "#000000",
+                      "font": "HelveticaNeue",
+                      "size": 20
+                    },
+                    "text": "Users",
+                    "href": {
+                      "url": "https://jasonelle.com/docs",
+                      "view": "web",
+                      "options": {
+                        "reader": true
+                      }
+                    }
+                  },
+                  {
+                    "type": "label",
+                    "style": {
+                      "align": "left",
+                      "color": "#000000",
+                      "font": "HelveticaNeue",
+                      "size": 20
+                    },
+                    "text": "Leaderboard",
+                    "href": {
+                      "url": "https://jasonelle.com/docs",
+                      "view": "web",
+                      "options": {
+                        "reader": true
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "label",
+                "text": "Top 10 Observations",
+                "style": {
+                  "align": "left",
+                  "font": "Courier-Bold",
+                  "size": 22
+                }
+              },
+              {
+                "type": "label",
+                "style": {
+                  "align": "left",
+                  "padding": 10,
+                  "color": "#000000",
+                  "font": "HelveticaNeue",
+                  "size": 20
+                },
+                "text": "Check out Live DEMO",
+                "href": {
+                  "url": "https://raw.githubusercontent.com/jasonelle/docs/develop/examples/jasonette/apps/jasonpedia/demo.json",
+                  "fresh": true
+                }
+              },
+              {
+                "type": "label",
+                "style": {
+                  "align": "left",
+                  "padding": 10,
+                  "color": "#000000",
+                  "font": "HelveticaNeue",
+                  "size": 20
+                },
+                "text": "Watch the tutorial video",
+                "href": {
+                  "url": "https://www.youtube.com/watch?v=hfevBAAfCMQ",
+                  "view": "web"
+                }
+              },
+              {
+                "type": "label",
+                "style": {
+                  "align": "left",
+                  "padding": 10,
+                  "color": "#000000",
+                  "font": "HelveticaNeue",
+                  "size": 20
+                },
+                "text": "View documentation",
+                "href": {
+                  "url": "https://jasonelle.com/docs",
+                  "view": "web",
+                  "options": {
+                    "reader": true
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "observationlist": {
+    "$jason": {
+      "head": {
+        "title": "Citizen Science",
+        "description": "Citizen Science observations list view",
+        "actions": {
+          "$pull": {
+            "trigger": "reload"
+          },
+          "$load": {
+            "trigger": "reload"
+          },
+          "reload": {
+            "type": "$network.request",
+            "options": {
+              "url": "https://my-json-server.typicode.com/stevecassidy/comp2110-api/observations"
+            },
+            "success": {
+              "type": "$render"
+            }
+          }
+        },
+        "templates": {
+          "body": {
+            "header": {
+              "title": "Observations",
+              "menu": {
+                "text": "Profile",
+                "style": {
+                  "color": "#0000ff",
+                  "font": "HelveticaNeue-Bold",
+                  "size": "17",
+                  "padding": "10"
+                },
+                "action": {
+                  "type": "$util.toast",
+                  "options": {
+                    "text": "Coming soon!"
+                  }
+                }
+              }
+            },
+            "sections": {
+              "{{#each $jason}}": {
+                "items": [
+                  {
+                    "type": "label",
+                    "text": "Observation {{id+1}}",
+                    "style": {
+                      "font": "Courier-Bold",
+                      "size": 20
+                    }
+                  },
+                  {
+                    "type": "vertical",
+                    "components": [
+                      {
+                        "type": "label",
+                        "text": "Location: {{location}}",
+                        "style": {
+                          "font": "Courier",
+                          "size": 14
+                        }
+                      },
+                      {
+                        "type": "label",
+                        "text": "Weather: {{weather}}",
+                        "style": {
+                          "font": "Courier",
+                          "size": 14
+                        }
+                      },
+                      {
+                        "type": "label",
+                        "text": "Read More",
+                        "style": {
+                          "font": "Courier",
+                          "size": 14
+                        },
+                        "href": {
+                          "url": "https://my-json-server.typicode.com/juliancesaro/jasonette-apps-api/observationdetail",
+                          "view": "jason"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "observationdetail": {
+    "$jason": {
+      "head": {
+        "title": "Citizen Science",
+        "description": "Citizen Science observation detailed view",
+        "actions": {
+          "$pull": {
+            "trigger": "reload"
+          },
+          "$load": {
+            "trigger": "reload"
+          },
+          "reload": {
+            "type": "$network.request",
+            "options": {
+              "url": "https://my-json-server.typicode.com/stevecassidy/comp2110-api/observations"
+            },
+            "success": {
+              "type": "$render"
+            }
+          }
+        },
+        "templates": {
+          "body": {
+            "header": {
+              "title": "Observation Information",
+              "menu": {
+                "text": "Profile",
+                "style": {
+                  "color": "#0000ff",
+                  "font": "HelveticaNeue-Bold",
+                  "size": "17",
+                  "padding": "10"
+                },
+                "action": {
+                  "type": "$util.toast",
+                  "options": {
+                    "text": "Coming soon!"
+                  }
+                }
+              }
+            },
+            "sections": {
+              "{{#each $jason}}": {
+                "items": [
+                  {
+                    "type": "label",
+                    "text": "Observation {{id+1}}",
+                    "style": {
+                      "font": "Courier-Bold",
+                      "size": 20
+                    }
+                  },
+                  {
+                    "type": "vertical",
+                    "components": [
+                      {
+                        "type": "label",
+                        "text": "Location: {{location}}",
+                        "style": {
+                          "font": "Courier",
+                          "size": 14
+                        }
+                      },
+                      {
+                        "type": "label",
+                        "text": "Weather: {{weather}}",
+                        "style": {
+                          "font": "Courier",
+                          "size": 14
+                        }
+                      },
+                      {
+                        "type": "label",
+                        "text": "Read More",
+                        "style": {
+                          "font": "Courier",
+                          "size": 14
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node hellots/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "typescript": "tsc hellots/index.ts --resolveJsonModule && npm start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "antlr4ts": "antlr4ts -visitor hellots/JSON.g4"
   },
   "repository": {
     "type": "git",
@@ -18,6 +20,10 @@
   },
   "homepage": "https://github.com/juliancesaro/Jasonelle-JS#readme",
   "devDependencies": {
-    "@types/node": "^13.13.2"
+    "@types/node": "^13.13.2",
+    "antlr4ts-cli": "^0.5.0-alpha.3"
+  },
+  "dependencies": {
+    "antlr4ts": "^0.5.0-alpha.3"
   }
 }
