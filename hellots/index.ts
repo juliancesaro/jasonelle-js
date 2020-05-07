@@ -6,11 +6,11 @@ import * as fs from "fs";
 for (const component in data.$jason) {
   switch(component) { 
     case "head": { 
-      console.log("head")
+      console.log("head");
       break; 
     } 
     case "body": {  
-      console.log("head")
+      console.log("head");
       break; 
     } 
     default: { 
