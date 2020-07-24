@@ -1,23 +1,9 @@
 {
   "$jason": {
     "head": {
-      "title": "{ ˃̵̑ᴥ˂̵̑}",
-      "actions": {
-        "$foreground": {
-          "type": "$reload"
-        }
-      }
+      "title": "Hello world!"
     },
-    "meme": {
-      "header": {
-        "style": {
-          "theme": true
-        }
-      },
-      "style": {
-        "background": "#ffffff",
-        "border": "none"
-      },
+    "body": {
       "sections": [
         {
           "items": [

@@ -4,10 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node hellots/index.js",
-    "typescript": "tsc hellots/index.ts --resolveJsonModule && npm start",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "antlr4ts": "antlr4ts -visitor hellots/JSON.g4"
+    "start": "node src/index.js",
+    "typescript": "tsc src/index.ts --resolveJsonModule && npm start",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -25,7 +24,6 @@
   },
   "dependencies": {
     "@schemastore/jasonette": "0.0.3",
-    "antlr4ts": "^0.5.0-alpha.3",
     "jsonschema": "^1.2.6"
   }
 }

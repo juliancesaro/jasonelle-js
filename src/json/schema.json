@@ -85,17 +85,9 @@
           "properties": {
             "background": {
               "description": "setting the background of the view",
-              "oneOf": [
-                {
-                  "title": "color",
-                  "type": "string",
-                  "format": "color"
-                },
-                {
-                  "title": "img url",
-                  "$ref": "#/definitions/imgUrl"
-                }
-              ]
+              "title": "color",
+              "type": "string",
+              "format": "color"
             },
             "border": {
               "description": "setting the border color for section items",
