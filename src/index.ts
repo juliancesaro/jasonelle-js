@@ -24,7 +24,7 @@ function setBody(body: string) {
 }
 
 function setLabel(body: string, label: string) {
-  return body.concat(body, `<label>${label}</label>`)
+  return body.concat(`<label>${label}</label>`)
 }
 
 // If JSON is valid, create HTML DOM.
@@ -44,7 +44,7 @@ if (v.validate(data.$jason, schema).errors.length > 0) {
         for (const headComponent in data.$jason.head) {
           switch (headComponent) {
             case "title": {
-              head = setTitle(head, headComponent)
+              head = setTitle(head, data.$jason.head.title)
               break
             }
           }
@@ -53,7 +53,6 @@ if (v.validate(data.$jason, schema).errors.length > 0) {
         break
       }
       case "body": {
-        body = setLabel(body, "Hi there!")
         for (const bodyComponent in data.$jason.body) {
           switch (bodyComponent) {
             case "sections": {
@@ -62,6 +61,15 @@ if (v.validate(data.$jason, schema).errors.length > 0) {
                 for (const sectionItem in section) {
                   switch (sectionItem) {
                     case "items":
+                      for (let k = 0; k < section.items.length; k++) {
+                        let item = section.items[k]
+                        switch (item.type) {
+                          case "label":
+                            if (item.text) {
+                              body = setLabel(body, item.text.toString())
+                            }
+                        }
+                      }
                       break
                   }
                 }
