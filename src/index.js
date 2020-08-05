@@ -3,7 +3,7 @@ exports.__esModule = true;
 var data = require("./json/hello.json");
 var schema = require("./json/schema.json");
 var fs = require("fs");
-var Jason_1 = require("./modules/Jason");
+var Generator_1 = require("./modules/Generator");
 var Validator = require("jsonschema").Validator;
 var v = new Validator();
 // If JSON is valid, create HTML DOM.
@@ -17,7 +17,7 @@ else {
     var HTML = "";
     var head = "";
     var body = "";
-    HTML = Jason_1.createHTML(head, body, { head: data.$jason.head, body: data.$jason.body }, HTML);
+    HTML = Generator_1.createHTML(head, body, { head: data.$jason.head, body: data.$jason.body }, HTML);
     // Create HTML element and write it to new 'index.html' file.
     fs.writeFileSync("src/index.html", HTML);
 }

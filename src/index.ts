@@ -1,7 +1,7 @@
 import * as data from "./json/hello.json"
 import * as schema from "./json/schema.json"
 import * as fs from "fs"
-import { createHTML } from "./modules/Jason"
+import { createHTML } from "./modules/Generator"
 
 var Validator = require("jsonschema").Validator
 var v = new Validator()
