@@ -26,54 +26,48 @@ function setLabel(body: string, label: string) {
   return body.concat(body, `<label>${label}</label>`)
 }
 
+export function createTitle(head: string, data: string) {
+  return setTitle(head, data)
+}
+
 // How do I make this work?
 export function createDOM(data: object) {
   // If JSON is valid, create HTML DOM.
-  if (v.validate(data.$jason, schema).errors.length > 0) {
-    // Invalid JSON.
-    console.log("JSON is invalid!")
-    console.log(v.validate(data.$jason, schema))
-  } else {
-    // Valid JSON.
-    let HTML = ""
-    let head = ""
-    let body = ""
 
-    for (const component in data.$jason) {
-      switch (component) {
-        case "head": {
-          for (const headComponent in data.$jason.head) {
-            switch (headComponent) {
-              case "title": {
-                head = setTitle(head, headComponent)
-                break
-              }
+  for (const component in data.$jason) {
+    switch (component) {
+      case "head": {
+        for (const headComponent in data.$jason.head) {
+          switch (headComponent) {
+            case "title": {
+              head = 
+              break
             }
           }
-          head = setHead(head)
-          break
         }
-        case "body": {
-          body = setLabel(body, "Hi there!")
-          for (const bodyComponent in data.$jason.body) {
-            switch (bodyComponent) {
-              case "sections": {
-                for (let i = 0; i < data.$jason.body.sections.length; i++) {
-                  let section = data.$jason.body.sections[i]
-                  for (const sectionItem in section) {
-                    switch (sectionItem) {
-                      case "items":
-                        break
-                    }
+        head = setHead(head)
+        break
+      }
+      case "body": {
+        body = setLabel(body, "Hi there!")
+        for (const bodyComponent in data.$jason.body) {
+          switch (bodyComponent) {
+            case "sections": {
+              for (let i = 0; i < data.$jason.body.sections.length; i++) {
+                let section = data.$jason.body.sections[i]
+                for (const sectionItem in section) {
+                  switch (sectionItem) {
+                    case "items":
+                      break
                   }
                 }
-                break
               }
+              break
             }
           }
-          body = setBody(body)
-          break
         }
+        body = setBody(body)
+        break
       }
     }
 

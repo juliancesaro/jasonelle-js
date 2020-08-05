@@ -1,11 +1,33 @@
 import * as data from "./json/hello.json"
 import * as schema from "./json/schema.json"
 import * as fs from "fs"
+import { create } from "domain"
 
 var Validator = require("jsonschema").Validator
 var v = new Validator()
 
-// Functions for building HTML DOM.
+//Interfaces
+interface Jason {
+  head: Head
+  body: Body
+}
+
+interface Head {
+  title: Title
+}
+
+interface Title {
+  title: string
+}
+
+interface Body {
+  head: Head
+  body: Body
+}
+
+/**
+ * Functions for building HTML DOM.
+ */
 function setHTML(HTML: string, head: string, body: string) {
   return HTML.concat(HTML, `<html>${head}${body}</html>`)
 }
@@ -24,7 +46,95 @@ function setBody(body: string) {
 }
 
 function setLabel(body: string, label: string) {
-  return body.concat(`<label>${label}</label>`)
+  return body.concat(`<p>${label}</p>`)
+}
+
+/**
+ * Functions for looping through data.
+ */
+function createHTML(head: string, body: string, data: any, HTML: string) {
+  for (const component in data) {
+    switch (component) {
+      case "head":
+        head = createHead(head, data.head)
+        break
+      case "body":
+        body = createBody(body, data.body)
+        break
+    }
+  }
+  return setHTML(HTML, head, body)
+}
+
+// Head functions
+function createHead(head: string, data: any) {
+  for (const headComponent in data) {
+    switch (headComponent) {
+      case "title": {
+        head = createTitle(head, data.title)
+        break
+      }
+    }
+  }
+  return setHead(head)
+}
+
+function createTitle(head: string, title: any) {
+  if (title) {
+    return setTitle(head, title)
+  } else {
+    return ""
+  }
+}
+
+// Body functions
+function createBody(body: string, data: any) {
+  for (const bodyComponent in data) {
+    switch (bodyComponent) {
+      case "sections": {
+        body = createSections(body, data.sections)
+      }
+    }
+  }
+  return setBody(body)
+}
+
+function createSections(body: string, data: any) {
+  for (let i = 0; i < data.length; i++) {
+    let section = data[i]
+    body = createSection(body, section)
+  }
+  return setBody(body)
+}
+
+function createSection(body: string, data: any) {
+  for (const sectionItem in data) {
+    switch (sectionItem) {
+      case "items":
+        body = createItems(body, data.items)
+        break
+    }
+  }
+  return setBody(body)
+}
+
+function createItems(body: string, data: any) {
+  for (let i = 0; i < data.length; i++) {
+    let item = data[i]
+    switch (item.type) {
+      case "label":
+        body = createLabel(body, item.text)
+    }
+  }
+  return setBody(body)
+}
+
+function createLabel(body: string, label: any) {
+  if (label) {
+    return setLabel(body, label.toString())
+  } else {
+    return ""
+  }
 }
 
 // If JSON is valid, create HTML DOM.
@@ -38,53 +148,8 @@ if (v.validate(data.$jason, schema).errors.length > 0) {
   let head = ""
   let body = ""
 
-  for (const component in data.$jason) {
-    switch (component) {
-      case "head": {
-        for (const headComponent in data.$jason.head) {
-          switch (headComponent) {
-            case "title": {
-              head = setTitle(head, data.$jason.head.title)
-              break
-            }
-          }
-        }
-        head = setHead(head)
-        break
-      }
-      case "body": {
-        for (const bodyComponent in data.$jason.body) {
-          switch (bodyComponent) {
-            case "sections": {
-              for (let i = 0; i < data.$jason.body.sections.length; i++) {
-                let section = data.$jason.body.sections[i]
-                for (const sectionItem in section) {
-                  switch (sectionItem) {
-                    case "items":
-                      for (let k = 0; k < section.items.length; k++) {
-                        let item = section.items[k]
-                        switch (item.type) {
-                          case "label":
-                            if (item.text) {
-                              body = setLabel(body, item.text.toString())
-                            }
-                        }
-                      }
-                      break
-                  }
-                }
-              }
-              break
-            }
-          }
-        }
-        body = setBody(body)
-        break
-      }
-    }
-  }
+  HTML = createHTML(head, body, data.$jason, HTML)
 
   // Create HTML element and write it to new 'index.html' file.
-  HTML = setHTML(HTML, head, body)
   fs.writeFileSync("src/index.html", HTML)
 }
