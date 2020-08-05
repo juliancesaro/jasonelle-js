@@ -22,8 +22,13 @@ function setTitle(head, title) {
 function setBody(body) {
     return "<body>" + body + "</body>";
 }
-function setLabel(body, label) {
-    return body.concat("<p>" + label + "</p>");
+function setLabel(body, item) {
+    if (item.href) {
+        return body.concat("<a href=" + item.href.url + " alt=" + item.href.alt + ">" + item.text + "</a>");
+    }
+    else {
+        return body.concat("<p>" + item.text + "</p>");
+    }
 }
 /**
  * Functions for looping through data.
@@ -55,7 +60,7 @@ function createHead(head, data) {
 }
 function createTitle(head, title) {
     if (title) {
-        return setTitle(head, title);
+        return setTitle(head, title.toString());
     }
     else {
         return "";
@@ -72,40 +77,51 @@ function createBody(body, data) {
     }
     return setBody(body);
 }
-function createSections(body, data) {
-    for (var i = 0; i < data.length; i++) {
-        var section = data[i];
+function createSections(body, sections) {
+    for (var i = 0; i < sections.length; i++) {
+        var section = sections[i];
         body = createSection(body, section);
     }
     return setBody(body);
 }
-function createSection(body, data) {
-    for (var sectionItem in data) {
+function createSection(body, section) {
+    for (var sectionItem in section) {
         switch (sectionItem) {
             case "items":
-                body = createItems(body, data.items);
+                body = createItems(body, section.items);
                 break;
         }
     }
     return setBody(body);
 }
-function createItems(body, data) {
-    for (var i = 0; i < data.length; i++) {
-        var item = data[i];
-        switch (item.type) {
-            case "label":
-                body = createLabel(body, item.text);
+function createItems(body, items) {
+    for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        if (item.components) {
+            body = createComponents(body, item.components);
+        }
+        else {
+            body = createItem(body, item);
         }
     }
     return setBody(body);
 }
+function createComponents(body, components) {
+    for (var i = 0; i < components.length; i++) {
+        var component = components[i];
+        body = createItem(body, component);
+    }
+    return setBody(body);
+}
+function createItem(body, item) {
+    switch (item.type) {
+        case "label":
+            body = createLabel(body, item);
+    }
+    return setBody(body);
+}
 function createLabel(body, label) {
-    if (label) {
-        return setLabel(body, label.toString());
-    }
-    else {
-        return "";
-    }
+    return setLabel(body, label);
 }
 // If JSON is valid, create HTML DOM.
 if (v.validate(data.$jason, schema).errors.length > 0) {
@@ -118,7 +134,7 @@ else {
     var HTML = "";
     var head = "";
     var body = "";
-    HTML = createHTML(head, body, data.$jason, HTML);
+    HTML = createHTML(head, body, { head: data.$jason.head, body: data.$jason.body }, HTML);
     // Create HTML element and write it to new 'index.html' file.
     fs.writeFileSync("src/index.html", HTML);
 }
