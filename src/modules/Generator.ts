@@ -4,35 +4,18 @@ import { Title } from "./components/Title"
 import { Body } from "./components/Body"
 import { Sections } from "./components/Sections"
 import { Section } from "./components/Section"
-import { Components } from "./components/Components"
 import { Items } from "./components/Items"
 import { Item } from "./components/Item"
+import { Components } from "./components/Components"
 
-// Functions for constructing HTML DOM
-export function setHTML(HTML: string, head: string, body: string) {
-  return HTML.concat(HTML, `<html>${head}${body}</html>`)
+let css = ""
+
+export const getCss = () => {
+  return css
 }
 
-export function setHead(head: string) {
-  return `<head>${head}</head>`
-}
-
-export function setTitle(head: string, title: string) {
-  return head.concat(head, `<title>${title}</title>`)
-}
-
-export function setBody(body: string) {
-  return `<body>${body}</body>`
-}
-
-export function setLabel(body: string, item: Item) {
-  if (item.href) {
-    return body.concat(
-      `<a href=${item.href.url} alt=${item.href.alt}>${item.text}</a>`
-    )
-  } else {
-    return body.concat(`<p>${item.text}</p>`)
-  }
+const setStyle = (style: string) => {
+  css = css.concat(style)
 }
 
 // Functions for iterating through data
@@ -55,7 +38,7 @@ export function createHTML(
   return setHTML(HTML, head, body)
 }
 
-export function createHead(head: string, data: Head) {
+function createHead(head: string, data: Head) {
   for (const headComponent in data) {
     switch (headComponent) {
       case "title": {
@@ -67,7 +50,7 @@ export function createHead(head: string, data: Head) {
   return setHead(head)
 }
 
-export function createTitle(head: string, title: Title) {
+function createTitle(head: string, title: Title) {
   if (title) {
     return setTitle(head, title.toString())
   } else {
@@ -75,7 +58,7 @@ export function createTitle(head: string, title: Title) {
   }
 }
 
-export function createBody(body: string, data: Body) {
+function createBody(body: string, data: Body) {
   for (const bodyComponent in data) {
     switch (bodyComponent) {
       case "sections": {
@@ -86,53 +69,116 @@ export function createBody(body: string, data: Body) {
   return setBody(body)
 }
 
-export function createSections(body: string, sections: Sections) {
+function createSections(body: string, sections: Sections) {
+  var sectionsWrapper = ""
   for (let i = 0; i < sections.length; i++) {
     let section = sections[i]
-    body = createSection(body, section)
+    sectionsWrapper = createSection(sectionsWrapper, section, i)
   }
+  body = setSections(body, sectionsWrapper)
   return setBody(body)
 }
 
-export function createSection(body: string, section: Section) {
+function createSection(body: string, section: Section, num: number) {
+  var sectionWrapper = ""
   for (const sectionItem in section) {
     switch (sectionItem) {
       case "items":
-        body = createItems(body, section.items)
+        sectionWrapper = createItems(body, section.items)
         break
     }
   }
+  body = setSection(body, sectionWrapper, num)
   return setBody(body)
 }
 
-export function createItems(body: string, items: Items) {
+function createItems(body: string, items: Items) {
   for (let i = 0; i < items.length; i++) {
     let item = items[i]
-    if (item.components) {
-      body = createComponents(body, item.components)
-    } else {
-      body = createItem(body, item)
-    }
+    body = createItem(body, item)
   }
   return setBody(body)
 }
 
-export function createComponents(body: string, components: Components) {
-  for (let i = 0; i < components.length; i++) {
-    let component = components[i]
-    body = createItem(body, component)
-  }
-  return setBody(body)
-}
-
-export function createItem(body: string, item: Item) {
+function createItem(body: string, item: Item) {
   switch (item.type) {
     case "label":
       body = createLabel(body, item)
+    case "vertical":
+      if (item.components) {
+        body = createComponents(body, item.components, item.type)
+      }
+    case "horizontal":
+      if (item.components) {
+        body = createComponents(body, item.components, item.type)
+      }
   }
   return setBody(body)
 }
 
-export function createLabel(body: string, label: Item) {
+function createComponents(
+  body: string,
+  components: Components,
+  orientation: string
+) {
+  var componentsWrapper = ""
+  for (let i = 0; i < components.length; i++) {
+    let component = components[i]
+    componentsWrapper = createItem(componentsWrapper, component)
+  }
+  body = setComponents(body, componentsWrapper, orientation)
+  return setBody(body)
+}
+
+function createLabel(body: string, label: Item) {
   return setLabel(body, label)
+}
+
+// Functions for constructing HTML DOM
+function setHTML(HTML: string, head: string, body: string) {
+  return HTML.concat(HTML, `<html>${head}${body}</html>`)
+}
+
+function setHead(head: string) {
+  return `<head><link rel='stylesheet' href='./styles.css'>${head}</head>`
+}
+
+function setTitle(head: string, title: string) {
+  return head.concat(head, `<title>${title}</title>`)
+}
+
+function setBody(body: string) {
+  return `<body>${body}</body>`
+}
+
+function setSections(body: string, sections: string) {
+  return body.concat(`<div class="sections">${sections}</div>`)
+}
+
+function setSection(body: string, section: string, num: number) {
+  return body.concat(`<section class="section-${num}">${section}</section>`)
+}
+
+function setComponents(body: string, components: string, orientation: string) {
+  if (orientation === "vertical") {
+    if (!css.includes(".vertical")) {
+      setStyle(".vertical{display: flex, flex-direction: column}")
+    }
+    return body.concat(`<div class="vertical">${components}</div>`)
+  } else {
+    if (!css.includes(".horizontal")) {
+      setStyle(".horizontal{display: flex}")
+    }
+    return body.concat(`<div class="horizontal">${components}</div>`)
+  }
+}
+
+function setLabel(body: string, item: Item) {
+  if (item.href) {
+    return body.concat(
+      `<a href=${item.href.url} alt=${item.href.alt}>${item.text}</a>`
+    )
+  } else {
+    return body.concat(`<p>${item.text}</p>`)
+  }
 }

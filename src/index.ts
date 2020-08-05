@@ -1,7 +1,7 @@
 import * as data from "./json/hello.json"
 import * as schema from "./json/schema.json"
 import * as fs from "fs"
-import { createHTML } from "./modules/Generator"
+import { createHTML, getCss } from "./modules/Generator"
 
 var Validator = require("jsonschema").Validator
 var v = new Validator()
@@ -24,6 +24,9 @@ if (v.validate(data.$jason, schema).errors.length > 0) {
     HTML
   )
 
+  let css = getCss()
+
   // Create HTML element and write it to new 'index.html' file.
-  fs.writeFileSync("src/index.html", HTML)
+  fs.writeFileSync("src/generated/index.html", HTML)
+  fs.writeFileSync("src/generated/styles.css", css)
 }

@@ -1,31 +1,12 @@
 "use strict";
 exports.__esModule = true;
-// Functions for constructing HTML DOM
-function setHTML(HTML, head, body) {
-    return HTML.concat(HTML, "<html>" + head + body + "</html>");
-}
-exports.setHTML = setHTML;
-function setHead(head) {
-    return "<head>" + head + "</head>";
-}
-exports.setHead = setHead;
-function setTitle(head, title) {
-    return head.concat(head, "<title>" + title + "</title>");
-}
-exports.setTitle = setTitle;
-function setBody(body) {
-    return "<body>" + body + "</body>";
-}
-exports.setBody = setBody;
-function setLabel(body, item) {
-    if (item.href) {
-        return body.concat("<a href=" + item.href.url + " alt=" + item.href.alt + ">" + item.text + "</a>");
-    }
-    else {
-        return body.concat("<p>" + item.text + "</p>");
-    }
-}
-exports.setLabel = setLabel;
+var css = "";
+exports.getCss = function () {
+    return css;
+};
+var setStyle = function (style) {
+    css = css.concat(style);
+};
 // Functions for iterating through data
 function createHTML(head, body, data, HTML) {
     for (var component in data) {
@@ -52,7 +33,6 @@ function createHead(head, data) {
     }
     return setHead(head);
 }
-exports.createHead = createHead;
 function createTitle(head, title) {
     if (title) {
         return setTitle(head, title.toString());
@@ -61,7 +41,6 @@ function createTitle(head, title) {
         return "";
     }
 }
-exports.createTitle = createTitle;
 function createBody(body, data) {
     for (var bodyComponent in data) {
         switch (bodyComponent) {
@@ -72,56 +51,99 @@ function createBody(body, data) {
     }
     return setBody(body);
 }
-exports.createBody = createBody;
 function createSections(body, sections) {
+    var sectionsWrapper = "";
     for (var i = 0; i < sections.length; i++) {
         var section = sections[i];
-        body = createSection(body, section);
+        sectionsWrapper = createSection(sectionsWrapper, section, i);
     }
+    body = setSections(body, sectionsWrapper);
     return setBody(body);
 }
-exports.createSections = createSections;
-function createSection(body, section) {
+function createSection(body, section, num) {
+    var sectionWrapper = "";
     for (var sectionItem in section) {
         switch (sectionItem) {
             case "items":
-                body = createItems(body, section.items);
+                sectionWrapper = createItems(body, section.items);
                 break;
         }
     }
+    body = setSection(body, sectionWrapper, num);
     return setBody(body);
 }
-exports.createSection = createSection;
 function createItems(body, items) {
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
-        if (item.components) {
-            body = createComponents(body, item.components);
-        }
-        else {
-            body = createItem(body, item);
-        }
+        body = createItem(body, item);
     }
     return setBody(body);
 }
-exports.createItems = createItems;
-function createComponents(body, components) {
-    for (var i = 0; i < components.length; i++) {
-        var component = components[i];
-        body = createItem(body, component);
-    }
-    return setBody(body);
-}
-exports.createComponents = createComponents;
 function createItem(body, item) {
     switch (item.type) {
         case "label":
             body = createLabel(body, item);
+        case "vertical":
+            if (item.components) {
+                body = createComponents(body, item.components, item.type);
+            }
+        case "horizontal":
+            if (item.components) {
+                body = createComponents(body, item.components, item.type);
+            }
     }
     return setBody(body);
 }
-exports.createItem = createItem;
+function createComponents(body, components, orientation) {
+    var componentsWrapper = "";
+    for (var i = 0; i < components.length; i++) {
+        var component = components[i];
+        componentsWrapper = createItem(componentsWrapper, component);
+    }
+    body = setComponents(body, componentsWrapper, orientation);
+    return setBody(body);
+}
 function createLabel(body, label) {
     return setLabel(body, label);
 }
-exports.createLabel = createLabel;
+// Functions for constructing HTML DOM
+function setHTML(HTML, head, body) {
+    return HTML.concat(HTML, "<html>" + head + body + "</html>");
+}
+function setHead(head) {
+    return "<head><link rel='stylesheet' href='./styles.css'>" + head + "</head>";
+}
+function setTitle(head, title) {
+    return head.concat(head, "<title>" + title + "</title>");
+}
+function setBody(body) {
+    return "<body>" + body + "</body>";
+}
+function setSections(body, sections) {
+    return body.concat("<div class=\"sections\">" + sections + "</div>");
+}
+function setSection(body, section, num) {
+    return body.concat("<section class=\"section-" + num + "\">" + section + "</section>");
+}
+function setComponents(body, components, orientation) {
+    if (orientation === "vertical") {
+        if (!css.includes(".vertical")) {
+            setStyle(".vertical{display: flex, flex-direction: column}");
+        }
+        return body.concat("<div class=\"vertical\">" + components + "</div>");
+    }
+    else {
+        if (!css.includes(".horizontal")) {
+            setStyle(".horizontal{display: flex}");
+        }
+        return body.concat("<div class=\"horizontal\">" + components + "</div>");
+    }
+}
+function setLabel(body, item) {
+    if (item.href) {
+        return body.concat("<a href=" + item.href.url + " alt=" + item.href.alt + ">" + item.text + "</a>");
+    }
+    else {
+        return body.concat("<p>" + item.text + "</p>");
+    }
+}

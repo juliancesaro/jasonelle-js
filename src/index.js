@@ -18,6 +18,8 @@ else {
     var head = "";
     var body = "";
     HTML = Generator_1.createHTML(head, body, { head: data.$jason.head, body: data.$jason.body }, HTML);
+    var css = Generator_1.getCss();
     // Create HTML element and write it to new 'index.html' file.
-    fs.writeFileSync("src/index.html", HTML);
+    fs.writeFileSync("src/generated/index.html", HTML);
+    fs.writeFileSync("src/generated/styles.css", css);
 }
