@@ -8,4 +8,4 @@ A Compiler for [Jasonelle](https://jasonelle.com/#/).
 
 Compiles 'index.ts' with --resolveJson module, then runs the resulting 'index.js'.
 
-Compiled Jason is then available in 'index.html'
+Resulting web application is available in 'src/generated'.
