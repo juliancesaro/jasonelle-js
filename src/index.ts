@@ -2,6 +2,7 @@ import * as data from "./json/hello.json"
 import * as schema from "./json/schema.json"
 import * as fs from "fs"
 import { createHTML, getCss } from "./modules/Generator"
+import { enumHTML } from "./modules/Translator"
 
 var Validator = require("jsonschema").Validator
 var v = new Validator()
@@ -13,20 +14,17 @@ if (v.validate(data.$jason, schema).errors.length > 0) {
   console.log(v.validate(data.$jason, schema))
 } else {
   // Valid JSON.
-  let HTML = ""
   let head = ""
   let body = ""
 
-  HTML = createHTML(
-    head,
-    body,
-    { head: data.$jason.head, body: data.$jason.body },
-    HTML
-  )
+  let HTML = enumHTML(data.$jason)
 
   let css = getCss()
 
   // Create HTML element and write it to new 'index.html' file.
-  fs.writeFileSync("src/generated/index.html", HTML)
+  fs.writeFileSync(
+    "src/generated/index.html",
+    HTML.window.document.documentElement.outerHTML
+  )
   fs.writeFileSync("src/generated/styles.css", css)
 }

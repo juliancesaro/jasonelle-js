@@ -1,5 +1,7 @@
 /node_modules
 
+/notes.txt
+
 # Generated js files
 /src/index.js
 /src/modules/Generator.js
