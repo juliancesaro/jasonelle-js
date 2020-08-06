@@ -76,12 +76,13 @@ function createSections(body: string, sections: Sections) {
     sectionsWrapper = createSection(sectionsWrapper, section, i)
   }
   body = setSections(body, sectionsWrapper)
-  return setBody(body)
+  return body
 }
 
 function createSection(body: string, section: Section, num: number) {
   var sectionWrapper = ""
   for (const sectionItem in section) {
+    console.log(body)
     switch (sectionItem) {
       case "items":
         sectionWrapper = createItems(body, section.items)
@@ -89,7 +90,7 @@ function createSection(body: string, section: Section, num: number) {
     }
   }
   body = setSection(body, sectionWrapper, num)
-  return setBody(body)
+  return body
 }
 
 function createItems(body: string, items: Items) {
@@ -97,7 +98,7 @@ function createItems(body: string, items: Items) {
     let item = items[i]
     body = createItem(body, item)
   }
-  return setBody(body)
+  return body
 }
 
 function createItem(body: string, item: Item) {
@@ -113,7 +114,7 @@ function createItem(body: string, item: Item) {
         body = createComponents(body, item.components, item.type)
       }
   }
-  return setBody(body)
+  return body
 }
 
 function createComponents(
@@ -127,7 +128,7 @@ function createComponents(
     componentsWrapper = createItem(componentsWrapper, component)
   }
   body = setComponents(body, componentsWrapper, orientation)
-  return setBody(body)
+  return body
 }
 
 function createLabel(body: string, label: Item) {

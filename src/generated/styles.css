@@ -1,1 +1,1 @@
-.horizontal{display: flex}
+.horizontal{display: flex}.vertical{display: flex, flex-direction: column}

@@ -58,11 +58,12 @@ function createSections(body, sections) {
         sectionsWrapper = createSection(sectionsWrapper, section, i);
     }
     body = setSections(body, sectionsWrapper);
-    return setBody(body);
+    return body;
 }
 function createSection(body, section, num) {
     var sectionWrapper = "";
     for (var sectionItem in section) {
+        console.log(body);
         switch (sectionItem) {
             case "items":
                 sectionWrapper = createItems(body, section.items);
@@ -70,14 +71,14 @@ function createSection(body, section, num) {
         }
     }
     body = setSection(body, sectionWrapper, num);
-    return setBody(body);
+    return body;
 }
 function createItems(body, items) {
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
         body = createItem(body, item);
     }
-    return setBody(body);
+    return body;
 }
 function createItem(body, item) {
     switch (item.type) {
@@ -92,7 +93,7 @@ function createItem(body, item) {
                 body = createComponents(body, item.components, item.type);
             }
     }
-    return setBody(body);
+    return body;
 }
 function createComponents(body, components, orientation) {
     var componentsWrapper = "";
@@ -101,7 +102,7 @@ function createComponents(body, components, orientation) {
         componentsWrapper = createItem(componentsWrapper, component);
     }
     body = setComponents(body, componentsWrapper, orientation);
-    return setBody(body);
+    return body;
 }
 function createLabel(body, label) {
     return setLabel(body, label);
