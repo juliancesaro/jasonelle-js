@@ -5,6 +5,7 @@
 # Generated js files
 /src/index.js
 /src/modules/Generator.js
+/src/modules/Translator.js
 /src/modules/components/Body.js
 /src/modules/components/Component.js
 /src/modules/components/Components.js
