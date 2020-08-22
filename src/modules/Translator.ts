@@ -1,117 +1,144 @@
-import { JSDOM } from "jsdom"
-import { Jason } from "./components/Jason"
-import { Head } from "./components/Head"
-import { Title } from "./components/Title"
-import { Body } from "./components/Body"
-import { Sections } from "./components/Sections"
-import { Section } from "./components/Section"
-import { Items } from "./components/Items"
-import { Item } from "./components/Item"
-import { Components } from "./components/Components"
+import { JSDOM } from "jsdom";
+import { Jason } from "./components/Jason";
+import { Head } from "./components/Head";
+import { Title } from "./components/Title";
+import { Body } from "./components/Body";
+import { Sections } from "./components/Sections";
+import { Section } from "./components/Section";
+import { Items } from "./components/Items";
+import { Item } from "./components/Item";
+import { Components } from "./components/Components";
 
 /**
- * Write about enum and create functions and what they do
+ * 'Iterate' functions iterate through components of 'data'
+ * parameter and call either iterate or iterate or create functions.
+ * 'Create' functions add a property to the parameter object.
  */
-// Functions for iterating through data
-export function enumHTML(data: Jason) {
-  const dom = new JSDOM(`<!DOCTYPE html>`)
+export function iterateHTML(data: Jason) {
+  let application = {};
   for (const component in data) {
     switch (component) {
       case "head":
-        enumHead(
-          dom,
-          dom.window.document.getElementsByTagName("head")[0],
-          data.head
-        )
-        break
+        application = iterateHead(application, data.head);
+        break;
+      case "body":
+        application = iterateBody(application, data.body);
+        break;
     }
   }
-  return dom
+  return application;
 }
 
-function enumHead(dom: JSDOM, head: HTMLHeadElement, data: Head) {
-  for (const headComponent in data) {
-    switch (headComponent) {
-      case "title": {
-        createTitle(dom, head, data.title)
-        break
+function iterateHead(application: any, data: Head) {
+  let metadata = {};
+  for (const component in data) {
+    switch (component) {
+      case "title":
+        metadata = createTitle(metadata, data.title);
+        break;
+    }
+  }
+  application = { ...application, metadata: { ...metadata } };
+  return application;
+}
+
+function createTitle(metadata: any, title: Title) {
+  if (title) {
+    let titleData = { title: title };
+    metadata = { ...metadata, ...titleData };
+  }
+  return metadata;
+}
+
+function iterateBody(application: any, data: Body) {
+  let content = {};
+  for (const bodyComponent in data) {
+    switch (bodyComponent) {
+      case "sections": {
+        content = iterateSections(content, data.sections);
       }
     }
   }
+  application = { ...application, content: { ...content } };
+  return application;
 }
 
-function createTitle(dom: JSDOM, head: HTMLHeadElement, title: Title) {
-  if (title) {
-    const titleELem = dom.window.document.createElement("title")
-    titleELem.innerHTML = title.toString()
-    head.appendChild(titleELem)
+function iterateSections(content: any, sections: Sections) {
+  let sectionsData = {};
+  for (let i = 0; i < sections.length; i++) {
+    let section = sections[i];
+    sectionsData = iterateSection(sectionsData, section, i);
   }
+  content = { ...content, sections: { ...sectionsData } };
+  return content;
 }
 
-// function enumBody(dom: JSDOM, body: HTMLBodyElement, data: Body) {
-//   for (const bodyComponent in data) {
-//     switch (bodyComponent) {
-//       case "sections": {
-//         enumSections(dom, body, data.sections)
-//       }
-//     }
-//   }
-// }
+function iterateSection(sectionsData: any, section: Section, num: Number) {
+  let sectionData = {};
+  for (const sectionItem in section) {
+    switch (sectionItem) {
+      case "items":
+        sectionData = iterateItems(sectionData, section.items);
+        break;
+    }
+  }
+  sectionsData = { ...sectionsData, [`section-${num}`]: { ...sectionData } };
+  return sectionsData;
+}
 
-// function enumSections(dom: JSDOM, body: HTMLBodyElement, sections: Sections) {
-//   for (let i = 0; i < sections.length; i++) {
-//     let section = sections[i]
-//     enumSection(dom, body, section)
-//   }
-// }
+function iterateItems(sectionData: any, items: Items) {
+  let itemsData = {};
+  for (let i = 0; i < items.length; i++) {
+    let item = items[i];
+    itemsData = iterateItem(itemsData, item, i);
+  }
+  sectionData = { ...sectionData, items: { ...itemsData } };
+  return sectionData;
+}
 
-// function enumSection(dom: JSDOM, body: HTMLBodyElement, section: Section) {
-//   for (const sectionItem in section) {
-//     switch (sectionItem) {
-//       case "items":
-//         enumItems(dom, body, section.items)
-//         break
-//     }
-//   }
-// }
+function iterateItem(itemsData: any, item: Item, num: Number) {
+  let itemData = {};
+  switch (item.type) {
+    case "label":
+      itemData = createLabel(itemData, item);
+    case "vertical":
+      if (item.components) {
+        itemData = iterateComponents(itemData, item.components, item.type);
+      }
+    case "horizontal":
+      if (item.components) {
+        itemData = iterateComponents(itemData, item.components, item.type);
+      }
+  }
 
-// function enumItems(dom: JSDOM, body: HTMLBodyElement, items: Items) {
-//   for (let i = 0; i < items.length; i++) {
-//     let item = items[i]
-//     enumItem(dom, body, item)
-//   }
-// }
+  itemsData = { ...itemsData, [`item-${num}`]: { ...itemData } };
+  return itemsData;
+}
 
-// function enumItem(dom: JSDOM, body: HTMLBodyElement, item: Item) {
-//   switch (item.type) {
-//     case "label":
-//       createLabel(dom, body, item)
-//     case "vertical":
-//       if (item.components) {
-//         enumComponents(dom, body, item.components)
-//       }
-//     case "horizontal":
-//       if (item.components) {
-//         enumComponents(dom, body, item.components)
-//       }
-//   }
-// }
+function iterateComponents(
+  itemData: any,
+  components: Components,
+  orientation: String
+) {
+  let componentsData = {};
+  for (let i = 0; i < components.length; i++) {
+    let component = components[i];
+    componentsData = iterateItem(componentsData, component, i);
+  }
+  itemData = {
+    ...itemData,
+    [`${orientation}-components`]: { ...componentsData },
+  };
+  return itemData;
+}
 
-// function enumComponents(
-//   dom: JSDOM,
-//   body: HTMLBodyElement,
-//   components: Components
-// ) {
-//   for (let i = 0; i < components.length; i++) {
-//     let component = components[i]
-//     enumItem(dom, body, component)
-//   }
-//   return body
-// }
-
-// function createLabel(dom: JSDOM, body: HTMLBodyElement, label: Item) {
-//   return setLabel(dom, body, label)
-// }
+function createLabel(itemData: any, label: Item) {
+  if (label) {
+    let labelData = { label: label.text };
+    itemData = { ...itemData, ...labelData };
+  }
+  return itemData;
+}
 
 // function setLabel(dom: JSDOM, body: HTMLBodyElement, item: Item) {
 //   if (item.href) {
