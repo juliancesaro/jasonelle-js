@@ -3,6 +3,7 @@
 /notes.txt
 
 # Generated js files
+/src/generated
 /src/index.js
 /src/modules/Generator.js
 /src/modules/Translator.js
