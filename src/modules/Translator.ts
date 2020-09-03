@@ -1,4 +1,3 @@
-import { JSDOM } from "jsdom"
 import { Jason } from "./components/Jason"
 import { Head } from "./components/Head"
 import { Title } from "./components/Title"
@@ -8,16 +7,19 @@ import { Section } from "./components/Section"
 import { Items } from "./components/Items"
 import { Item } from "./components/Item"
 import { Components } from "./components/Components"
+import { Style } from "./components/Style"
 
 /**
  * 'Iterate' functions:
  *      - Iterate through data object or property of the data object.
  *      - Add to the application object or property of the application object.
+ *      - Return the resulting application object or property.
  *
  * 'Create' functions:
- *      - Add a property to the parameter object.
+ *      - Add their second paramter as a property of their first parameter.
+ *      - Return the resulting object.
  */
-export function iterateHTML(data: Jason) {
+export function iterateJason(data: Jason) {
   let application = {}
   for (const component in data) {
     switch (component) {
@@ -32,12 +34,12 @@ export function iterateHTML(data: Jason) {
   return application
 }
 
-function iterateHead(application: any, data: Head) {
+function iterateHead(application: any, head: Head) {
   let metadata = {}
-  for (const component in data) {
+  for (const component in head) {
     switch (component) {
       case "title":
-        metadata = createTitle(metadata, data.title)
+        metadata = createTitle(metadata, head.title)
         break
     }
   }
@@ -53,12 +55,12 @@ function createTitle(metadata: any, title: Title) {
   return metadata
 }
 
-function iterateBody(application: any, data: Body) {
+function iterateBody(application: any, body: Body) {
   let content = {}
-  for (const bodyComponent in data) {
+  for (const bodyComponent in body) {
     switch (bodyComponent) {
       case "sections": {
-        content = iterateSections(content, data.sections)
+        content = iterateSections(content, body.sections)
       }
     }
   }

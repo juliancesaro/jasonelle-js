@@ -1,185 +1,168 @@
-import { Jason } from "./components/Jason"
-import { Head } from "./components/Head"
+import { JSDOM } from "jsdom"
 import { Title } from "./components/Title"
-import { Body } from "./components/Body"
-import { Sections } from "./components/Sections"
-import { Section } from "./components/Section"
 import { Items } from "./components/Items"
-import { Item } from "./components/Item"
 import { Components } from "./components/Components"
 
-let css = ""
-
-export const getCss = () => {
-  return css
-}
-
-const setStyle = (style: string) => {
-  css = css.concat(style)
-}
-
-// Functions for iterating through data
-export function createHTML(
-  head: string,
-  body: string,
-  data: Jason,
-  HTML: string
-) {
+/**
+ * 'Iterate' functions:
+ *      - Iterate through data object or property of the data object.
+ *      - Add to the application object or property of the application object.
+ *      - Return the resulting application object or property.
+ *
+ * 'Create' functions:
+ *      - Add their second paramter as a property of their first parameter.
+ *      - Return the resulting object.
+ */
+export function iterateIR(data: any) {
+  let dom = new JSDOM(`<!DOCTYPE html>`)
   for (const component in data) {
     switch (component) {
-      case "head":
-        head = createHead(head, data.head)
+      case "metadata":
+        iterateMetadata(dom, data.metadata)
         break
-      case "body":
-        body = createBody(body, data.body)
+      case "content":
+        iterateContent(dom, data.content)
         break
     }
   }
-  return setHTML(HTML, head, body)
+  return dom
 }
 
-function createHead(head: string, data: Head) {
-  for (const headComponent in data) {
-    switch (headComponent) {
-      case "title": {
-        head = createTitle(head, data.title)
+function iterateMetadata(dom: JSDOM, metadata: any) {
+  for (const component in metadata) {
+    switch (component) {
+      case "title":
+        createTitle(dom, metadata.title)
         break
-      }
     }
   }
-  return setHead(head)
 }
 
-function createTitle(head: string, title: Title) {
+function createTitle(dom: JSDOM, title: Title) {
   if (title) {
-    return setTitle(head, title.toString())
-  } else {
-    return ""
+    let appTitle = dom.window.document.createElement("title")
+    appTitle.innerHTML = title.toString()
+    dom.window.document.getElementsByTagName("head")[0].appendChild(appTitle)
   }
 }
 
-function createBody(body: string, data: Body) {
-  for (const bodyComponent in data) {
+function iterateContent(dom: JSDOM, content: any) {
+  for (const bodyComponent in content) {
     switch (bodyComponent) {
       case "sections": {
-        body = createSections(body, data.sections)
+        iterateSections(dom, content.sections)
       }
     }
   }
-  return setBody(body)
 }
 
-function createSections(body: string, sections: Sections) {
-  var sectionsWrapper = ""
-  for (let i = 0; i < sections.length; i++) {
-    let section = sections[i]
-    sectionsWrapper = createSection(sectionsWrapper, section, i)
+function iterateSections(dom: JSDOM, sections: any) {
+  let sectionsDiv = dom.window.document.createElement("div")
+  sectionsDiv.className = "sections"
+  dom.window.document.getElementsByTagName("body")[0].appendChild(sectionsDiv)
+  for (const sectionsItem in sections) {
+    let sectionName = sectionsItem
+    let section = sections[sectionsItem]
+    iterateSection(dom, sectionName, section)
   }
-  body = setSections(body, sectionsWrapper)
-  return body
 }
 
-function createSection(body: string, section: Section, num: number) {
-  var sectionWrapper = ""
-  for (const sectionItem in section) {
-    console.log(body)
-    switch (sectionItem) {
-      case "items":
-        sectionWrapper = createItems(body, section.items)
-        break
-    }
+function iterateSection(dom: JSDOM, sectionName: string, section: any) {
+  let sectionDiv = dom.window.document.createElement("div")
+  sectionDiv.className = sectionName
+  dom.window.document
+    .getElementsByClassName("sections")[0]
+    .appendChild(sectionDiv)
+  if (section.items) {
+    iterateItems(dom, sectionName, section.items)
   }
-  body = setSection(body, sectionWrapper, num)
-  return body
 }
 
-function createItems(body: string, items: Items) {
-  for (let i = 0; i < items.length; i++) {
-    let item = items[i]
-    body = createItem(body, item)
+function iterateItems(dom: JSDOM, sectionName: string, items: Items) {
+  let itemsDiv = dom.window.document.createElement("div")
+  itemsDiv.className = `${sectionName}-items`
+  dom.window.document
+    .getElementsByClassName(sectionName)[0]
+    .appendChild(itemsDiv)
+  for (const itemsItem in items) {
+    let itemName = itemsItem
+    let item = items[itemsItem]
+    iterateItem(dom, `${sectionName}-items`, itemName, item)
   }
-  return body
 }
 
-function createItem(body: string, item: Item) {
-  switch (item.type) {
-    case "label":
-      body = createLabel(body, item)
-    case "vertical":
-      if (item.components) {
-        body = createComponents(body, item.components, item.type)
-      }
-    case "horizontal":
-      if (item.components) {
-        body = createComponents(body, item.components, item.type)
-      }
+function iterateItem(
+  dom: JSDOM,
+  sectionName: string,
+  itemName: string,
+  item: any
+) {
+  console.log(sectionName)
+
+  let itemDiv = dom.window.document.createElement("div")
+  itemDiv.className = `${sectionName}-${itemName}`
+  dom.window.document
+    .getElementsByClassName(sectionName)[0]
+    .appendChild(itemDiv)
+  if (item.label) {
+    createLabel(dom, `${sectionName}-${itemName}`, item.label)
   }
-  return body
+  if (item.link) {
+    createLink(dom, `${sectionName}-${itemName}`, item.link)
+  }
+  if (item["horizontal-components"]) {
+    iterateComponents(
+      dom,
+      item["horizontal-components"],
+      `${sectionName}-${itemName}`,
+      "horizontal-components"
+    )
+  }
+  if (item["vertical-components"]) {
+    iterateComponents(
+      dom,
+      item["vertical-components"],
+      `${sectionName}-${itemName}`,
+      "vertical-components"
+    )
+  }
 }
 
-function createComponents(
-  body: string,
+function iterateComponents(
+  dom: JSDOM,
   components: Components,
+  parentName: string,
   orientation: string
 ) {
-  var componentsWrapper = ""
-  for (let i = 0; i < components.length; i++) {
-    let component = components[i]
-    componentsWrapper = createItem(componentsWrapper, component)
-  }
-  body = setComponents(body, componentsWrapper, orientation)
-  return body
-}
-
-function createLabel(body: string, label: Item) {
-  return setLabel(body, label)
-}
-
-// Functions for constructing HTML DOM
-function setHTML(HTML: string, head: string, body: string) {
-  return HTML.concat(HTML, `<html>${head}${body}</html>`)
-}
-
-function setHead(head: string) {
-  return `<head><link rel='stylesheet' href='./styles.css'>${head}</head>`
-}
-
-function setTitle(head: string, title: string) {
-  return head.concat(head, `<title>${title}</title>`)
-}
-
-function setBody(body: string) {
-  return `<body>${body}</body>`
-}
-
-function setSections(body: string, sections: string) {
-  return body.concat(`<div class="sections">${sections}</div>`)
-}
-
-function setSection(body: string, section: string, num: number) {
-  return body.concat(`<section class="section-${num}">${section}</section>`)
-}
-
-function setComponents(body: string, components: string, orientation: string) {
-  if (orientation === "vertical") {
-    if (!css.includes(".vertical")) {
-      setStyle(".vertical{display: flex, flex-direction: column}")
-    }
-    return body.concat(`<div class="vertical">${components}</div>`)
-  } else {
-    if (!css.includes(".horizontal")) {
-      setStyle(".horizontal{display: flex}")
-    }
-    return body.concat(`<div class="horizontal">${components}</div>`)
+  let componentsDiv = dom.window.document.createElement("div")
+  componentsDiv.className = `${parentName}-${orientation}`
+  dom.window.document
+    .getElementsByClassName(parentName)[0]
+    .appendChild(componentsDiv)
+  for (const componentItem in components) {
+    const component = components[componentItem]
+    iterateItem(dom, `${parentName}-${orientation}`, componentItem, component)
   }
 }
 
-function setLabel(body: string, item: Item) {
-  if (item.href) {
-    return body.concat(
-      `<a href=${item.href.url} alt=${item.href.alt}>${item.text}</a>`
-    )
-  } else {
-    return body.concat(`<p>${item.text}</p>`)
+function createLabel(dom: JSDOM, parentName: string, label: any) {
+  if (label) {
+    let appLabel = dom.window.document.createElement("p")
+    appLabel.innerHTML = label
+    dom.window.document
+      .getElementsByClassName(parentName)[0]
+      .appendChild(appLabel)
+  }
+}
+
+function createLink(dom: JSDOM, parentName: string, link: any) {
+  if (link) {
+    let appLink = dom.window.document.createElement("a")
+    appLink.href = link.url
+    appLink.setAttribute("alt", link.alt)
+    appLink.innerHTML = link.text
+    dom.window.document
+      .getElementsByClassName(parentName)[0]
+      .appendChild(appLink)
   }
 }
