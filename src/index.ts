@@ -20,4 +20,5 @@ if (v.validate(data.$jason, schema).errors.length > 0) {
 
   fs.writeFileSync("src/generated/IR.json", JSON.stringify(IR))
   fs.writeFileSync("src/generated/index.html", dom.serialize())
+  // fs.writeFileSync("src/generated/styles.css", dom.window.StyleSheetList)
 }

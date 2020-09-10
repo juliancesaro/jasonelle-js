@@ -15,16 +15,18 @@ import { Components } from "./components/Components"
  */
 export function iterateIR(data: any) {
   let dom = new JSDOM(`<!DOCTYPE html>`)
-  for (const component in data) {
-    switch (component) {
-      case "metadata":
-        iterateMetadata(dom, data.metadata)
-        break
-      case "content":
-        iterateContent(dom, data.content)
-        break
+
+  iterateMetadata(dom, data.metadata)
+  iterateContent(dom, data.content)
+
+  for (const styleItem in data.style) {
+    let style = ""
+    for (const styleAttr in data.style[styleItem]) {
+      style += `${styleAttr}: ${data.style[styleItem][styleAttr]};`
     }
+    dom.window.document.getElementById(styleItem)?.setAttribute("style", style)
   }
+
   return dom
 }
 
@@ -58,7 +60,7 @@ function iterateContent(dom: JSDOM, content: any) {
 
 function iterateSections(dom: JSDOM, sections: any) {
   let sectionsDiv = dom.window.document.createElement("div")
-  sectionsDiv.className = "sections"
+  sectionsDiv.id = "sections"
   dom.window.document.getElementsByTagName("body")[0].appendChild(sectionsDiv)
   for (const sectionsItem in sections) {
     let sectionName = sectionsItem
@@ -69,21 +71,17 @@ function iterateSections(dom: JSDOM, sections: any) {
 
 function iterateSection(dom: JSDOM, sectionName: string, section: any) {
   let sectionDiv = dom.window.document.createElement("div")
-  sectionDiv.className = sectionName
-  dom.window.document
-    .getElementsByClassName("sections")[0]
-    .appendChild(sectionDiv)
-  if (section.items) {
-    iterateItems(dom, sectionName, section.items)
+  sectionDiv.id = sectionName
+  dom.window.document.getElementById("sections")?.appendChild(sectionDiv)
+  if (section[`${sectionName}-items`]) {
+    iterateItems(dom, sectionName, section[`${sectionName}-items`])
   }
 }
 
 function iterateItems(dom: JSDOM, sectionName: string, items: Items) {
   let itemsDiv = dom.window.document.createElement("div")
-  itemsDiv.className = `${sectionName}-items`
-  dom.window.document
-    .getElementsByClassName(sectionName)[0]
-    .appendChild(itemsDiv)
+  itemsDiv.id = `${sectionName}-items`
+  dom.window.document.getElementById(sectionName)?.appendChild(itemsDiv)
   for (const itemsItem in items) {
     let itemName = itemsItem
     let item = items[itemsItem]
@@ -97,32 +95,28 @@ function iterateItem(
   itemName: string,
   item: any
 ) {
-  console.log(sectionName)
-
   let itemDiv = dom.window.document.createElement("div")
-  itemDiv.className = `${sectionName}-${itemName}`
-  dom.window.document
-    .getElementsByClassName(sectionName)[0]
-    .appendChild(itemDiv)
+  itemDiv.id = `${itemName}`
+  dom.window.document.getElementById(sectionName)?.appendChild(itemDiv)
   if (item.label) {
-    createLabel(dom, `${sectionName}-${itemName}`, item.label)
+    createLabel(dom, `${itemName}`, item.label)
   }
   if (item.link) {
-    createLink(dom, `${sectionName}-${itemName}`, item.link)
+    createLink(dom, `${itemName}`, item.link)
   }
-  if (item["horizontal-components"]) {
+  if (item[`${itemName}-horizontal-components`]) {
     iterateComponents(
       dom,
-      item["horizontal-components"],
-      `${sectionName}-${itemName}`,
+      item[`${itemName}-horizontal-components`],
+      `${itemName}`,
       "horizontal-components"
     )
   }
-  if (item["vertical-components"]) {
+  if (item[`${itemName}-vertical-components`]) {
     iterateComponents(
       dom,
-      item["vertical-components"],
-      `${sectionName}-${itemName}`,
+      item[`${itemName}-vertical-components`],
+      `${itemName}`,
       "vertical-components"
     )
   }
@@ -135,10 +129,8 @@ function iterateComponents(
   orientation: string
 ) {
   let componentsDiv = dom.window.document.createElement("div")
-  componentsDiv.className = `${parentName}-${orientation}`
-  dom.window.document
-    .getElementsByClassName(parentName)[0]
-    .appendChild(componentsDiv)
+  componentsDiv.id = `${parentName}-${orientation}`
+  dom.window.document.getElementById(parentName)?.appendChild(componentsDiv)
   for (const componentItem in components) {
     const component = components[componentItem]
     iterateItem(dom, `${parentName}-${orientation}`, componentItem, component)
@@ -149,9 +141,7 @@ function createLabel(dom: JSDOM, parentName: string, label: any) {
   if (label) {
     let appLabel = dom.window.document.createElement("p")
     appLabel.innerHTML = label
-    dom.window.document
-      .getElementsByClassName(parentName)[0]
-      .appendChild(appLabel)
+    dom.window.document.getElementById(parentName)?.appendChild(appLabel)
   }
 }
 
@@ -161,8 +151,6 @@ function createLink(dom: JSDOM, parentName: string, link: any) {
     appLink.href = link.url
     appLink.setAttribute("alt", link.alt)
     appLink.innerHTML = link.text
-    dom.window.document
-      .getElementsByClassName(parentName)[0]
-      .appendChild(appLink)
+    dom.window.document.getElementById(parentName)?.appendChild(appLink)
   }
 }

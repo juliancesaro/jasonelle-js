@@ -19,18 +19,15 @@ import { Style } from "./components/Style"
  *      - Add their second paramter as a property of their first parameter.
  *      - Return the resulting object.
  */
+let style = {}
 export function iterateJason(data: Jason) {
   let application = {}
-  for (const component in data) {
-    switch (component) {
-      case "head":
-        application = iterateHead(application, data.head)
-        break
-      case "body":
-        application = iterateBody(application, data.body)
-        break
-    }
-  }
+
+  application = iterateHead(application, data.head)
+  application = iterateBody(application, data.body)
+
+  application = { ...application, style: { ...style } }
+
   return application
 }
 
@@ -83,7 +80,7 @@ function iterateSection(sectionsData: any, section: Section, num: Number) {
   for (const sectionItem in section) {
     switch (sectionItem) {
       case "items":
-        sectionData = iterateItems(sectionData, section.items)
+        sectionData = iterateItems(sectionData, section.items, `section-${num}`)
         break
     }
   }
@@ -91,17 +88,22 @@ function iterateSection(sectionsData: any, section: Section, num: Number) {
   return sectionsData
 }
 
-function iterateItems(sectionData: any, items: Items) {
+function iterateItems(sectionData: any, items: Items, parentName: string) {
   let itemsData = {}
   for (let i = 0; i < items.length; i++) {
     let item = items[i]
-    itemsData = iterateItem(itemsData, item, i)
+    itemsData = iterateItem(itemsData, item, `${parentName}-items`, i)
   }
-  sectionData = { ...sectionData, items: { ...itemsData } }
+  sectionData = { ...sectionData, [`${parentName}-items`]: { ...itemsData } }
   return sectionData
 }
 
-function iterateItem(itemsData: any, item: Item, num: Number) {
+function iterateItem(
+  itemsData: any,
+  item: Item,
+  parentName: string,
+  itemNum: Number
+) {
   let itemData = {}
   switch (item.type) {
     case "label":
@@ -112,35 +114,71 @@ function iterateItem(itemsData: any, item: Item, num: Number) {
       }
     case "vertical":
       if (item.components) {
-        itemData = iterateComponents(itemData, item.components, item.type)
+        itemData = iterateComponents(
+          itemData,
+          item.components,
+          `${parentName}-item-${itemNum}`,
+          item.type
+        )
       }
     case "horizontal":
       if (item.components) {
-        itemData = iterateComponents(itemData, item.components, item.type)
+        itemData = iterateComponents(
+          itemData,
+          item.components,
+          `${parentName}-item-${itemNum}`,
+          item.type
+        )
       }
   }
-  itemsData = { ...itemsData, [`item-${num}`]: { ...itemData } }
+  if (item.style) {
+    style = { ...style, [`${parentName}-item-${itemNum}`]: item.style }
+  }
+  itemsData = {
+    ...itemsData,
+    [`${parentName}-item-${itemNum}`]: { ...itemData },
+  }
   return itemsData
 }
 
 function iterateComponents(
   itemData: any,
   components: Components,
+  parentName: string,
   orientation: String
 ) {
   let componentsData = {}
   for (let i = 0; i < components.length; i++) {
     let component = components[i]
-    componentsData = iterateComponent(componentsData, component, i)
+    componentsData = iterateComponent(
+      componentsData,
+      component,
+      `${parentName}-${orientation}-components`,
+      i
+    )
+  }
+  if (orientation === "horizontal") {
+    style = {
+      ...style,
+      [`${parentName}-${orientation}-components`]: {
+        display: "flex",
+      },
+    }
   }
   itemData = {
     ...itemData,
-    [`${orientation}-components`]: { ...componentsData },
+    [`${parentName}-${orientation}-components`]: { ...componentsData },
   }
+
   return itemData
 }
 
-function iterateComponent(componentsData: any, component: Item, num: Number) {
+function iterateComponent(
+  componentsData: any,
+  component: Item,
+  parentName: string,
+  num: Number
+) {
   let componentData = {}
   switch (component.type) {
     case "label":
@@ -148,7 +186,7 @@ function iterateComponent(componentsData: any, component: Item, num: Number) {
   }
   componentsData = {
     ...componentsData,
-    [`component-${num}`]: { ...componentData },
+    [`${parentName}-component-${num}`]: { ...componentData },
   }
   return componentsData
 }
@@ -171,4 +209,6 @@ function createLabel(itemData: any, label: Item) {
   return itemData
 }
 
-function addStyle(id: String, style: Style) {}
+function addStyle(id: string, style: any) {
+  return { [id]: style }
+}
