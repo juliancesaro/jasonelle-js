@@ -1,7 +1,8 @@
 {
   "$jason": {
     "head": {
-      "title": "Hello world!"
+      "title": "Hello world!",
+      "tiitle": "Hello world!"
     },
     "body": {
       "sections": [

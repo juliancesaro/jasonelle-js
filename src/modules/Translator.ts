@@ -19,196 +19,243 @@ import { Style } from "./components/Style"
  *      - Add their second paramter as a property of their first parameter.
  *      - Return the resulting object.
  */
-let style = {}
 export function iterateJason(data: Jason) {
   let application = {}
 
   application = iterateHead(application, data.head)
   application = iterateBody(application, data.body)
 
-  application = { ...application, style: { ...style } }
+  application = { ...application }
 
   return application
 }
 
 function iterateHead(application: any, head: Head) {
-  let metadata = {}
+  application = { ...application, metadata: {} }
   for (const component in head) {
     switch (component) {
       case "title":
-        metadata = createTitle(metadata, head.title)
+        application.metadata = createTitle(application.metadata, head.title)
         break
     }
   }
-  application = { ...application, metadata: { ...metadata } }
   return application
 }
 
-function createTitle(metadata: any, title: Title) {
+function createTitle(parent: any, title: Title) {
   if (title) {
     let titleData = { title: title }
-    metadata = { ...metadata, ...titleData }
+    parent = {
+      ...parent,
+      ...titleData,
+    }
   }
-  return metadata
+  return parent
 }
 
 function iterateBody(application: any, body: Body) {
-  let content = {}
+  application = { ...application, content: {} }
   for (const bodyComponent in body) {
     switch (bodyComponent) {
       case "sections": {
-        content = iterateSections(content, body.sections)
+        application = iterateSections(application, body.sections)
       }
     }
   }
-  application = { ...application, content: { ...content } }
   return application
 }
 
-function iterateSections(content: any, sections: Sections) {
-  let sectionsData = {}
+function iterateSections(application: any, sections: Sections) {
+  application.content = { ...application.content, sections: {} }
   for (let i = 0; i < sections.length; i++) {
     let section = sections[i]
-    sectionsData = iterateSection(sectionsData, section, i)
+    application = iterateSection(application, section, i)
   }
-  content = { ...content, sections: { ...sectionsData } }
-  return content
+  return application
 }
 
-function iterateSection(sectionsData: any, section: Section, num: Number) {
-  let sectionData = {}
+function iterateSection(
+  application: any,
+  section: Section,
+  sectionNum: number
+) {
+  application.content.sections = {
+    ...application.content.sections,
+    [`section-${sectionNum}`]: {},
+  }
   for (const sectionItem in section) {
     switch (sectionItem) {
       case "items":
-        sectionData = iterateItems(sectionData, section.items, `section-${num}`)
+        application = iterateItems(
+          application,
+          section.items,
+          `section-${sectionNum}`
+        )
         break
     }
   }
-  sectionsData = { ...sectionsData, [`section-${num}`]: { ...sectionData } }
-  return sectionsData
+
+  return application
 }
 
-function iterateItems(sectionData: any, items: Items, parentName: string) {
-  let itemsData = {}
+function iterateItems(application: any, items: Items, sectionName: string) {
+  application.content.sections[`${sectionName}`] = {
+    ...application.content.sections[`${sectionName}`],
+    [`${sectionName}-items`]: {},
+  }
   for (let i = 0; i < items.length; i++) {
     let item = items[i]
-    itemsData = iterateItem(itemsData, item, `${parentName}-items`, i)
+    application = iterateItem(application, item, sectionName, `item-${i}`)
   }
-  sectionData = { ...sectionData, [`${parentName}-items`]: { ...itemsData } }
-  return sectionData
+  return application
 }
 
 function iterateItem(
-  itemsData: any,
+  application: any,
   item: Item,
-  parentName: string,
-  itemNum: Number
+  sectionName: string,
+  itemName: string
 ) {
-  let itemData = {}
+  application.content.sections[`${sectionName}`][`${sectionName}-items`] = {
+    ...application.content.sections[`${sectionName}`][`${sectionName}-items`],
+    [`${sectionName}-items-${itemName}`]: {},
+  }
   switch (item.type) {
     case "label":
       if (item.href) {
-        itemData = createLink(itemData, item)
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
+        ] = createLink(
+          application.content.sections[`${sectionName}`][
+            `${sectionName}-items`
+          ][`${sectionName}-items-${itemName}`],
+          item
+        )
       } else {
-        itemData = createLabel(itemData, item)
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
+        ] = createLabel(
+          application.content.sections[`${sectionName}`][
+            `${sectionName}-items`
+          ][`${sectionName}-items-${itemName}`],
+          item
+        )
       }
     case "vertical":
       if (item.components) {
-        itemData = iterateComponents(
-          itemData,
+        application = iterateComponents(
+          application,
           item.components,
-          `${parentName}-item-${itemNum}`,
+          sectionName,
+          itemName,
           item.type
         )
       }
     case "horizontal":
       if (item.components) {
-        itemData = iterateComponents(
-          itemData,
+        application = iterateComponents(
+          application,
           item.components,
-          `${parentName}-item-${itemNum}`,
+          sectionName,
+          itemName,
           item.type
         )
       }
   }
   if (item.style) {
-    style = { ...style, [`${parentName}-item-${itemNum}`]: item.style }
+    application.style = {
+      ...application.style,
+      [`${sectionName}-items-${sectionName}`]: item.style,
+    }
   }
-  itemsData = {
-    ...itemsData,
-    [`${parentName}-item-${itemNum}`]: { ...itemData },
-  }
-  return itemsData
+  return application
 }
 
 function iterateComponents(
-  itemData: any,
+  application: any,
   components: Components,
-  parentName: string,
+  sectionName: string,
+  itemName: string,
   orientation: String
 ) {
-  let componentsData = {}
+  application.content.sections[`${sectionName}`][`${sectionName}-items`][
+    `${sectionName}-items-${itemName}`
+  ] = {
+    ...application.content.sections[`${sectionName}`][`${sectionName}-items`][
+      `${sectionName}-items-${itemName}`
+    ],
+    [`${sectionName}-items-${itemName}-${orientation}-components`]: {},
+  }
   for (let i = 0; i < components.length; i++) {
     let component = components[i]
-    componentsData = iterateComponent(
-      componentsData,
+    application = iterateComponent(
+      application,
       component,
-      `${parentName}-${orientation}-components`,
-      i
+      sectionName,
+      itemName,
+      `${orientation}-components`,
+      `component-${i}`
     )
   }
   if (orientation === "horizontal") {
-    style = {
-      ...style,
-      [`${parentName}-${orientation}-components`]: {
+    application.style = {
+      ...application.style,
+      [`${sectionName}-items-${itemName}-${orientation}-components`]: {
         display: "flex",
       },
     }
   }
-  itemData = {
-    ...itemData,
-    [`${parentName}-${orientation}-components`]: { ...componentsData },
-  }
-
-  return itemData
+  return application
 }
 
 function iterateComponent(
-  componentsData: any,
+  application: any,
   component: Item,
-  parentName: string,
-  num: Number
+  sectionName: string,
+  itemName: string,
+  componentsName: string,
+  componentName: string
 ) {
-  let componentData = {}
+  application.content.sections[`${sectionName}`][`${sectionName}-items`][
+    `${sectionName}-items-${itemName}`
+  ][`${sectionName}-items-${itemName}-${componentsName}`] = {
+    ...application.content.sections[`${sectionName}`][`${sectionName}-items`][
+      `${sectionName}-items-${itemName}`
+    ][`${sectionName}-items-${itemName}-${componentsName}`],
+    [`${sectionName}-items-${itemName}-${componentsName}-${componentName}`]: {},
+  }
   switch (component.type) {
     case "label":
-      componentData = createLabel(componentData, component)
+      application.content.sections[`${sectionName}`][`${sectionName}-items`][
+        `${sectionName}-items-${itemName}`
+      ][`${sectionName}-items-${itemName}-${componentsName}`][
+        `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+      ] = createLabel(
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
+        ][`${sectionName}-items-${itemName}-${componentsName}`][
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+        ],
+        component
+      )
   }
-  componentsData = {
-    ...componentsData,
-    [`${parentName}-component-${num}`]: { ...componentData },
-  }
-  return componentsData
+  return application
 }
 
-function createLink(itemData: any, link: Item) {
+function createLink(parent: any, link: Item) {
   if (link) {
     let linkData = {
       link: { text: link.text, url: link.href?.url, alt: link.href?.alt },
     }
-    itemData = { ...itemData, ...linkData }
+    parent = { ...parent, ...linkData }
   }
-  return itemData
+  return parent
 }
 
-function createLabel(itemData: any, label: Item) {
+function createLabel(parent: any, label: Item) {
   if (label) {
     let labelData = { label: label.text }
-    itemData = { ...itemData, ...labelData }
+    parent = { ...parent, ...labelData }
   }
-  return itemData
-}
-
-function addStyle(id: string, style: any) {
-  return { [id]: style }
+  return parent
 }
