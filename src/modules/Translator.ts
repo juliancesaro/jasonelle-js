@@ -131,16 +131,28 @@ function iterateItem(
           ][`${sectionName}-items-${itemName}`],
           item
         )
-      } else {
+      } else if (item.text) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
           `${sectionName}-items-${itemName}`
         ] = createLabel(
           application.content.sections[`${sectionName}`][
             `${sectionName}-items`
           ][`${sectionName}-items-${itemName}`],
-          item
+          item.text
         )
       }
+    case "image":
+      if (item.url) {
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
+        ] = createImage(
+          application.content.sections[`${sectionName}`][
+            `${sectionName}-items`
+          ][`${sectionName}-items-${itemName}`],
+          item.url
+        )
+      }
+    // Component cases
     case "vertical":
       if (item.components) {
         application = iterateComponents(
@@ -165,7 +177,7 @@ function iterateItem(
   if (item.style) {
     application.style = {
       ...application.style,
-      [`${sectionName}-items-${sectionName}`]: item.style,
+      [`${sectionName}-items-${itemName}`]: item.style,
     }
   }
   return application
@@ -226,36 +238,85 @@ function iterateComponent(
   }
   switch (component.type) {
     case "label":
-      application.content.sections[`${sectionName}`][`${sectionName}-items`][
-        `${sectionName}-items-${itemName}`
-      ][`${sectionName}-items-${itemName}-${componentsName}`][
-        `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
-      ] = createLabel(
+      if (component.href) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
           `${sectionName}-items-${itemName}`
         ][`${sectionName}-items-${itemName}-${componentsName}`][
           `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
-        ],
-        component
-      )
+        ] = createLink(
+          application.content.sections[`${sectionName}`][
+            `${sectionName}-items`
+          ][`${sectionName}-items-${itemName}`][
+            `${sectionName}-items-${itemName}-${componentsName}`
+          ][
+            `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+          ],
+          component
+        )
+      } else if (component.text) {
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
+        ][`${sectionName}-items-${itemName}-${componentsName}`][
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+        ] = createLabel(
+          application.content.sections[`${sectionName}`][
+            `${sectionName}-items`
+          ][`${sectionName}-items-${itemName}`][
+            `${sectionName}-items-${itemName}-${componentsName}`
+          ][
+            `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+          ],
+          component.text
+        )
+      }
+    case "image":
+      if (component.url) {
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
+        ][`${sectionName}-items-${itemName}-${componentsName}`][
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+        ] = createImage(
+          application.content.sections[`${sectionName}`][
+            `${sectionName}-items`
+          ][`${sectionName}-items-${itemName}`][
+            `${sectionName}-items-${itemName}-${componentsName}`
+          ][
+            `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+          ],
+          component.url
+        )
+      }
+  }
+  if (component.style) {
+    application.style = {
+      ...application.style,
+      [`${sectionName}-items-${itemName}-${componentsName}-${componentName}`]: component.style,
+    }
   }
   return application
 }
 
+function createLabel(parent: any, label: string) {
+  let labelData = { label: label }
+  parent = { ...parent, ...labelData }
+  return parent
+}
+
 function createLink(parent: any, link: Item) {
-  if (link) {
+  if (link.href) {
     let linkData = {
-      link: { text: link.text, url: link.href?.url, alt: link.href?.alt },
+      link: { text: link.text, url: link.href.url, alt: link.href.alt },
     }
     parent = { ...parent, ...linkData }
   }
   return parent
 }
 
-function createLabel(parent: any, label: Item) {
-  if (label) {
-    let labelData = { label: label.text }
-    parent = { ...parent, ...labelData }
+function createImage(parent: any, image: string) {
+  let imageData = {
+    image: { url: image },
   }
+  parent = { ...parent, ...imageData }
+
   return parent
 }

@@ -13,6 +13,16 @@ import { Components } from "./components/Components"
  *      - Add their second paramter as a property of their first parameter.
  *      - Return the resulting object.
  */
+
+// export function iterateStyle(data: any) {
+
+//   const styleString = Object.entries(data.style).map((i) =>
+//     i.map(([k, v]) => `.${k}:${v}`).join(";")
+//   )
+
+//   return styleString
+// }
+
 export function iterateIR(data: any) {
   let dom = new JSDOM(`<!DOCTYPE html>`)
 
@@ -41,11 +51,9 @@ function iterateMetadata(dom: JSDOM, metadata: any) {
 }
 
 function createTitle(dom: JSDOM, title: Title) {
-  if (title) {
-    let appTitle = dom.window.document.createElement("title")
-    appTitle.innerHTML = title.toString()
-    dom.window.document.getElementsByTagName("head")[0].appendChild(appTitle)
-  }
+  let appTitle = dom.window.document.createElement("title")
+  appTitle.innerHTML = title.toString()
+  dom.window.document.getElementsByTagName("head")[0].appendChild(appTitle)
 }
 
 function iterateContent(dom: JSDOM, content: any) {
@@ -104,6 +112,9 @@ function iterateItem(
   if (item.link) {
     createLink(dom, `${itemName}`, item.link)
   }
+  if (item.image) {
+    createImage(dom, `${itemName}`, item.image)
+  }
   if (item[`${itemName}-horizontal-components`]) {
     iterateComponents(
       dom,
@@ -138,19 +149,21 @@ function iterateComponents(
 }
 
 function createLabel(dom: JSDOM, parentName: string, label: any) {
-  if (label) {
-    let appLabel = dom.window.document.createElement("p")
-    appLabel.innerHTML = label
-    dom.window.document.getElementById(parentName)?.appendChild(appLabel)
-  }
+  let appLabel = dom.window.document.createElement("p")
+  appLabel.innerHTML = label
+  dom.window.document.getElementById(parentName)?.appendChild(appLabel)
 }
 
 function createLink(dom: JSDOM, parentName: string, link: any) {
-  if (link) {
-    let appLink = dom.window.document.createElement("a")
-    appLink.href = link.url
-    appLink.setAttribute("alt", link.alt)
-    appLink.innerHTML = link.text
-    dom.window.document.getElementById(parentName)?.appendChild(appLink)
-  }
+  let appLink = dom.window.document.createElement("a")
+  appLink.href = link.url
+  appLink.setAttribute("alt", link.alt)
+  appLink.innerHTML = link.text
+  dom.window.document.getElementById(parentName)?.appendChild(appLink)
+}
+
+function createImage(dom: JSDOM, parentName: string, image: any) {
+  let appImage = dom.window.document.createElement("img")
+  appImage.src = image.url
+  dom.window.document.getElementById(parentName)?.appendChild(appImage)
 }

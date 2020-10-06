@@ -17,11 +17,22 @@
                 },
                 {
                   "type": "label",
+                  "style": {
+                    "align": "right",
+                    "padding": 10,
+                    "color": "#000000",
+                    "font": "HelveticaNeue",
+                    "size": 20
+                  },
                   "text": "This is a demo app. You can make your own app by changing the url inside strings.xml"
                 },
                 {
                   "type": "label",
-                  "text": "Hello there"
+                  "text": "hihi documentation",
+                  "href": {
+                    "url": "https://hi.com/docs",
+                    "alt": "hi"
+                  }
                 }
               ]
             },
@@ -41,8 +52,13 @@
               }
             },
             {
-              "type": "label",
-              "text": "Watch the tutorial video"
+              "type": "image",
+              "url": "http://i.imgur.com/KUJPgGV.png",
+              "style": {
+                "width": "50",
+                "height": "50",
+                "corner_radius": "25"
+              }
             },
             {
               "type": "label",
