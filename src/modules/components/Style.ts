@@ -1,7 +1,7 @@
 export interface Style {
   align?: string
-  padding?: number
+  padding?: string
   color?: string
   font?: string
-  size?: number
+  size?: string
 }

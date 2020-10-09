@@ -34,6 +34,7 @@ export function iterateIR(data: any) {
     for (const styleAttr in data.style[styleItem]) {
       style += `${styleAttr}: ${data.style[styleItem][styleAttr]};`
     }
+
     dom.window.document.getElementById(styleItem)?.setAttribute("style", style)
   }
 
@@ -103,32 +104,37 @@ function iterateItem(
   itemName: string,
   item: any
 ) {
-  let itemDiv = dom.window.document.createElement("div")
-  itemDiv.id = `${itemName}`
-  dom.window.document.getElementById(sectionName)?.appendChild(itemDiv)
   if (item.label) {
-    createLabel(dom, `${itemName}`, item.label)
+    createLabel(dom, sectionName, itemName.replace("-wrapper", ""), item.label)
   }
   if (item.link) {
-    createLink(dom, `${itemName}`, item.link)
+    createLink(dom, sectionName, itemName.replace("-wrapper", ""), item.link)
   }
   if (item.image) {
-    createImage(dom, `${itemName}`, item.image)
+    createImage(dom, sectionName, itemName.replace("-wrapper", ""), item.image)
   }
-  if (item[`${itemName}-horizontal-components`]) {
-    iterateComponents(
+  if (item.button) {
+    createButton(
       dom,
-      item[`${itemName}-horizontal-components`],
-      `${itemName}`,
-      "horizontal-components"
+      sectionName,
+      itemName.replace("-wrapper", ""),
+      item.button
     )
   }
-  if (item[`${itemName}-vertical-components`]) {
+  if (item[`${itemName.replace("-wrapper", "")}-horizontal-components`]) {
     iterateComponents(
       dom,
-      item[`${itemName}-vertical-components`],
-      `${itemName}`,
-      "vertical-components"
+      item[`${itemName.replace("-wrapper", "")}-horizontal-components`],
+      sectionName,
+      `${itemName.replace("-wrapper", "")}-horizontal-components`
+    )
+  }
+  if (item[`${itemName.replace("-wrapper", "")}-vertical-components`]) {
+    iterateComponents(
+      dom,
+      item[`${itemName.replace("-wrapper", "")}-vertical-components`],
+      sectionName,
+      `${itemName.replace("-wrapper", "")}-vertical-components`
     )
   }
 }
@@ -137,33 +143,43 @@ function iterateComponents(
   dom: JSDOM,
   components: Components,
   parentName: string,
-  orientation: string
+  id: string
 ) {
   let componentsDiv = dom.window.document.createElement("div")
-  componentsDiv.id = `${parentName}-${orientation}`
+  componentsDiv.id = id
   dom.window.document.getElementById(parentName)?.appendChild(componentsDiv)
   for (const componentItem in components) {
     const component = components[componentItem]
-    iterateItem(dom, `${parentName}-${orientation}`, componentItem, component)
+    iterateItem(dom, id, componentItem, component)
   }
 }
 
-function createLabel(dom: JSDOM, parentName: string, label: any) {
+function createLabel(dom: JSDOM, parentName: string, id: string, label: any) {
   let appLabel = dom.window.document.createElement("p")
+  appLabel.id = id
   appLabel.innerHTML = label
   dom.window.document.getElementById(parentName)?.appendChild(appLabel)
 }
 
-function createLink(dom: JSDOM, parentName: string, link: any) {
+function createLink(dom: JSDOM, parentName: string, id: string, link: any) {
   let appLink = dom.window.document.createElement("a")
+  appLink.id = id
   appLink.href = link.url
   appLink.setAttribute("alt", link.alt)
   appLink.innerHTML = link.text
   dom.window.document.getElementById(parentName)?.appendChild(appLink)
 }
 
-function createImage(dom: JSDOM, parentName: string, image: any) {
+function createImage(dom: JSDOM, parentName: string, id: string, image: any) {
   let appImage = dom.window.document.createElement("img")
+  appImage.id = id
   appImage.src = image.url
   dom.window.document.getElementById(parentName)?.appendChild(appImage)
+}
+
+function createButton(dom: JSDOM, parentName: string, id: string, button: any) {
+  let appButton = dom.window.document.createElement("button")
+  appButton.id = id
+  appButton.innerHTML = button.text
+  dom.window.document.getElementById(parentName)?.appendChild(appButton)
 }

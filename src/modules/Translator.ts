@@ -57,9 +57,11 @@ function iterateBody(application: any, body: Body) {
   application = { ...application, content: {} }
   for (const bodyComponent in body) {
     switch (bodyComponent) {
-      case "sections": {
-        application = iterateSections(application, body.sections)
-      }
+      case "sections":
+        {
+          application = iterateSections(application, body.sections)
+        }
+        break
     }
   }
   return application
@@ -118,40 +120,53 @@ function iterateItem(
 ) {
   application.content.sections[`${sectionName}`][`${sectionName}-items`] = {
     ...application.content.sections[`${sectionName}`][`${sectionName}-items`],
-    [`${sectionName}-items-${itemName}`]: {},
+    [`${sectionName}-items-${itemName}-wrapper`]: {},
   }
+
   switch (item.type) {
     case "label":
       if (item.href) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
-          `${sectionName}-items-${itemName}`
+          `${sectionName}-items-${itemName}-wrapper`
         ] = createLink(
           application.content.sections[`${sectionName}`][
             `${sectionName}-items`
-          ][`${sectionName}-items-${itemName}`],
+          ][`${sectionName}-items-${itemName}-wrapper`],
           item
         )
       } else if (item.text) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
-          `${sectionName}-items-${itemName}`
+          `${sectionName}-items-${itemName}-wrapper`
         ] = createLabel(
           application.content.sections[`${sectionName}`][
             `${sectionName}-items`
-          ][`${sectionName}-items-${itemName}`],
+          ][`${sectionName}-items-${itemName}-wrapper`],
           item.text
         )
       }
+      break
     case "image":
       if (item.url) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
-          `${sectionName}-items-${itemName}`
+          `${sectionName}-items-${itemName}-wrapper`
         ] = createImage(
           application.content.sections[`${sectionName}`][
             `${sectionName}-items`
-          ][`${sectionName}-items-${itemName}`],
+          ][`${sectionName}-items-${itemName}-wrapper`],
           item.url
         )
       }
+      break
+    case "button":
+      application.content.sections[`${sectionName}`][`${sectionName}-items`][
+        `${sectionName}-items-${itemName}-wrapper`
+      ] = createButton(
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}-wrapper`
+        ],
+        item
+      )
+      break
     // Component cases
     case "vertical":
       if (item.components) {
@@ -163,6 +178,7 @@ function iterateItem(
           item.type
         )
       }
+      break
     case "horizontal":
       if (item.components) {
         application = iterateComponents(
@@ -173,6 +189,7 @@ function iterateItem(
           item.type
         )
       }
+      break
   }
   if (item.style) {
     application.style = {
@@ -191,7 +208,7 @@ function iterateComponents(
   orientation: String
 ) {
   application.content.sections[`${sectionName}`][`${sectionName}-items`][
-    `${sectionName}-items-${itemName}`
+    `${sectionName}-items-${itemName}-wrapper`
   ] = {
     ...application.content.sections[`${sectionName}`][`${sectionName}-items`][
       `${sectionName}-items-${itemName}`
@@ -216,6 +233,14 @@ function iterateComponents(
         display: "flex",
       },
     }
+  } else if (orientation === "vertical") {
+    application.style = {
+      ...application.style,
+      [`${sectionName}-items-${itemName}-${orientation}-components`]: {
+        display: "flex",
+        ["flex-direction"]: "column",
+      },
+    }
   }
   return application
 }
@@ -229,63 +254,79 @@ function iterateComponent(
   componentName: string
 ) {
   application.content.sections[`${sectionName}`][`${sectionName}-items`][
-    `${sectionName}-items-${itemName}`
+    `${sectionName}-items-${itemName}-wrapper`
   ][`${sectionName}-items-${itemName}-${componentsName}`] = {
     ...application.content.sections[`${sectionName}`][`${sectionName}-items`][
-      `${sectionName}-items-${itemName}`
+      `${sectionName}-items-${itemName}-wrapper`
     ][`${sectionName}-items-${itemName}-${componentsName}`],
-    [`${sectionName}-items-${itemName}-${componentsName}-${componentName}`]: {},
+    [`${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`]: {},
   }
   switch (component.type) {
     case "label":
       if (component.href) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
-          `${sectionName}-items-${itemName}`
+          `${sectionName}-items-${itemName}-wrapper`
         ][`${sectionName}-items-${itemName}-${componentsName}`][
-          `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
         ] = createLink(
           application.content.sections[`${sectionName}`][
             `${sectionName}-items`
-          ][`${sectionName}-items-${itemName}`][
+          ][`${sectionName}-items-${itemName}-wrapper`][
             `${sectionName}-items-${itemName}-${componentsName}`
           ][
-            `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+            `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
           ],
           component
         )
       } else if (component.text) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
-          `${sectionName}-items-${itemName}`
+          `${sectionName}-items-${itemName}-wrapper`
         ][`${sectionName}-items-${itemName}-${componentsName}`][
-          `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
         ] = createLabel(
           application.content.sections[`${sectionName}`][
             `${sectionName}-items`
-          ][`${sectionName}-items-${itemName}`][
+          ][`${sectionName}-items-${itemName}-wrapper`][
             `${sectionName}-items-${itemName}-${componentsName}`
           ][
-            `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+            `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
           ],
           component.text
         )
       }
+      break
     case "image":
       if (component.url) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
-          `${sectionName}-items-${itemName}`
+          `${sectionName}-items-${itemName}-wrapper`
         ][`${sectionName}-items-${itemName}-${componentsName}`][
-          `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
         ] = createImage(
           application.content.sections[`${sectionName}`][
             `${sectionName}-items`
-          ][`${sectionName}-items-${itemName}`][
+          ][`${sectionName}-items-${itemName}-wrapper`][
             `${sectionName}-items-${itemName}-${componentsName}`
           ][
-            `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+            `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
           ],
           component.url
         )
       }
+      break
+    case "button":
+      application.content.sections[`${sectionName}`][`${sectionName}-items`][
+        `${sectionName}-items-${itemName}-wrapper`
+      ][`${sectionName}-items-${itemName}-${componentsName}`][
+        `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
+      ] = createButton(
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}-wrapper`
+        ][`${sectionName}-items-${itemName}-${componentsName}`][
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
+        ],
+        component
+      )
+      break
   }
   if (component.style) {
     application.style = {
@@ -317,6 +358,23 @@ function createImage(parent: any, image: string) {
     image: { url: image },
   }
   parent = { ...parent, ...imageData }
+
+  return parent
+}
+
+function createButton(parent: any, button: Item) {
+  let buttonData = {}
+
+  if (button.text) {
+    buttonData = {
+      button: { text: button.text },
+    }
+  } else if (button.url) {
+    buttonData = {
+      button: { url: button.url },
+    }
+  }
+  parent = { ...parent, ...buttonData }
 
   return parent
 }
