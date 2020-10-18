@@ -1,16 +1,17 @@
-import * as data from "./json/hello.json"
-import * as schema from "./json/schema.json"
-import { iterateJason } from "./modules/Translator"
-import { iterateIR } from "./modules/Generator"
-import * as fs from "fs"
+import * as data from './json/hello.json'
+import * as schema from './json/schema.json'
+import { iterateJason } from './modules/Translator'
+import { iterateIR } from './modules/Generator'
+import { iterateStyle } from './modules/Generator'
+import * as fs from 'fs'
 
-var Validator = require("jsonschema").Validator
+var Validator = require('jsonschema').Validator
 var v = new Validator()
 
 // If JSON is valid, create HTML DOM.
 if (v.validate(data.$jason, schema).errors.length > 0) {
   // Invalid JSON.
-   ("JSON is invalid!")
+  ;('JSON is invalid!')
   console.log(v.validate(data.$jason, schema))
 } else {
   // Valid JSON.
@@ -18,9 +19,9 @@ if (v.validate(data.$jason, schema).errors.length > 0) {
 
   let dom = iterateIR(IR)
 
-  //let style = iterateStyle(IR)
+  let style = iterateStyle(IR)
 
-  fs.writeFileSync("src/generated/IR.json", JSON.stringify(IR))
-  fs.writeFileSync("src/generated/index.html", dom.serialize())
-  //fs.writeFileSync("src/generated/styles.css", style)
+  fs.writeFileSync('src/generated/IR.json', JSON.stringify(IR))
+  fs.writeFileSync('src/generated/index.html', dom.serialize())
+  fs.writeFileSync('src/generated/styles.css', style)
 }

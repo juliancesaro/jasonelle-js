@@ -3,6 +3,7 @@ import { Title } from './components/Title'
 import { Items } from './components/Items'
 import { Item } from './components/Item'
 import { Components } from './components/Components'
+import { link } from 'fs'
 
 /**
  * 'Iterate' functions:
@@ -15,29 +16,44 @@ import { Components } from './components/Components'
  *      - Return the resulting object.
  */
 
-// export function iterateStyle(data: any) {
+export function iterateStyle(data: any) {
+  let styleString = ''
+  for (const styleObj in data.style) {
+    if (data.style[styleObj].hasOwnProperty('placeholder_color')) {
+      const styles = `color:${data.style[styleObj].placeholder_color}`
+      styleString += `#${styleObj}::placeholder{${styles}}`
+      delete data.style[styleObj].placeholder_color
+    }
+    const styles = Object.entries(data.style[styleObj])
+      .map(([k, v]) => `${correctStyles(k)}:${correctStyles(String(v))}`)
+      .join(';')
+    styleString += `#${styleObj}{${styles}}`
+  }
+  return styleString
+}
 
-//   const styleString = Object.entries(data.style).map((i) =>
-//     i.map(([k, v]) => `.${k}:${v}`).join(";")
-//   )
-
-//   return styleString
-// }
+function correctStyles(property: string) {
+  if (!isNaN(Number(property))) {
+    return `${property}px`
+  } else if (property === 'corner_radius') {
+    return 'border-radius'
+  } else if (property === 'align') {
+    return 'text-align'
+  } else {
+    return property
+  }
+}
 
 export function iterateIR(data: any) {
   let dom = new JSDOM(`<!DOCTYPE html>`)
 
+  let styleLink = dom.window.document.createElement('link')
+  styleLink.rel = 'stylesheet'
+  styleLink.href = 'styles.css'
+  dom.window.document.getElementsByTagName('head')[0].appendChild(styleLink)
+
   iterateMetadata(dom, data.metadata)
   iterateContent(dom, data.content)
-
-  for (const styleItem in data.style) {
-    let style = ''
-    for (const styleAttr in data.style[styleItem]) {
-      style += `${styleAttr}: ${data.style[styleItem][styleAttr]};`
-    }
-
-    dom.window.document.getElementById(styleItem)?.setAttribute('style', style)
-  }
 
   return dom
 }
