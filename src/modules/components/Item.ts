@@ -8,5 +8,10 @@ export interface Item {
   text?: string
   href?: Link
   url?: string
+  name?: string
+  value?: string
+  placeholder?: string
+  keyboard?: string
+  focus?: string
   components?: Components
 }

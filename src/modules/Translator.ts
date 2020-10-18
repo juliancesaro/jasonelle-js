@@ -120,27 +120,27 @@ function iterateItem(
 ) {
   application.content.sections[`${sectionName}`][`${sectionName}-items`] = {
     ...application.content.sections[`${sectionName}`][`${sectionName}-items`],
-    [`${sectionName}-items-${itemName}-wrapper`]: {},
+    [`${sectionName}-items-${itemName}`]: {},
   }
 
   switch (item.type) {
     case "label":
       if (item.href) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
-          `${sectionName}-items-${itemName}-wrapper`
+          `${sectionName}-items-${itemName}`
         ] = createLink(
           application.content.sections[`${sectionName}`][
             `${sectionName}-items`
-          ][`${sectionName}-items-${itemName}-wrapper`],
+          ][`${sectionName}-items-${itemName}`],
           item
         )
       } else if (item.text) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
-          `${sectionName}-items-${itemName}-wrapper`
+          `${sectionName}-items-${itemName}`
         ] = createLabel(
           application.content.sections[`${sectionName}`][
             `${sectionName}-items`
-          ][`${sectionName}-items-${itemName}-wrapper`],
+          ][`${sectionName}-items-${itemName}`],
           item.text
         )
       }
@@ -148,21 +148,31 @@ function iterateItem(
     case "image":
       if (item.url) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
-          `${sectionName}-items-${itemName}-wrapper`
+          `${sectionName}-items-${itemName}`
         ] = createImage(
           application.content.sections[`${sectionName}`][
             `${sectionName}-items`
-          ][`${sectionName}-items-${itemName}-wrapper`],
+          ][`${sectionName}-items-${itemName}`],
           item.url
         )
       }
       break
     case "button":
       application.content.sections[`${sectionName}`][`${sectionName}-items`][
-        `${sectionName}-items-${itemName}-wrapper`
+        `${sectionName}-items-${itemName}`
       ] = createButton(
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
-          `${sectionName}-items-${itemName}-wrapper`
+          `${sectionName}-items-${itemName}`
+        ],
+        item
+      )
+      break
+    case "textfield":
+      application.content.sections[`${sectionName}`][`${sectionName}-items`][
+        `${sectionName}-items-${itemName}`
+      ] = createTextfield(
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
         ],
         item
       )
@@ -208,7 +218,7 @@ function iterateComponents(
   orientation: String
 ) {
   application.content.sections[`${sectionName}`][`${sectionName}-items`][
-    `${sectionName}-items-${itemName}-wrapper`
+    `${sectionName}-items-${itemName}`
   ] = {
     ...application.content.sections[`${sectionName}`][`${sectionName}-items`][
       `${sectionName}-items-${itemName}`
@@ -254,42 +264,42 @@ function iterateComponent(
   componentName: string
 ) {
   application.content.sections[`${sectionName}`][`${sectionName}-items`][
-    `${sectionName}-items-${itemName}-wrapper`
+    `${sectionName}-items-${itemName}`
   ][`${sectionName}-items-${itemName}-${componentsName}`] = {
     ...application.content.sections[`${sectionName}`][`${sectionName}-items`][
-      `${sectionName}-items-${itemName}-wrapper`
+      `${sectionName}-items-${itemName}`
     ][`${sectionName}-items-${itemName}-${componentsName}`],
-    [`${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`]: {},
+    [`${sectionName}-items-${itemName}-${componentsName}-${componentName}`]: {},
   }
   switch (component.type) {
     case "label":
       if (component.href) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
-          `${sectionName}-items-${itemName}-wrapper`
+          `${sectionName}-items-${itemName}`
         ][`${sectionName}-items-${itemName}-${componentsName}`][
-          `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
         ] = createLink(
           application.content.sections[`${sectionName}`][
             `${sectionName}-items`
-          ][`${sectionName}-items-${itemName}-wrapper`][
+          ][`${sectionName}-items-${itemName}`][
             `${sectionName}-items-${itemName}-${componentsName}`
           ][
-            `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
+            `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
           ],
           component
         )
       } else if (component.text) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
-          `${sectionName}-items-${itemName}-wrapper`
+          `${sectionName}-items-${itemName}`
         ][`${sectionName}-items-${itemName}-${componentsName}`][
-          `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
         ] = createLabel(
           application.content.sections[`${sectionName}`][
             `${sectionName}-items`
-          ][`${sectionName}-items-${itemName}-wrapper`][
+          ][`${sectionName}-items-${itemName}`][
             `${sectionName}-items-${itemName}-${componentsName}`
           ][
-            `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
+            `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
           ],
           component.text
         )
@@ -298,16 +308,16 @@ function iterateComponent(
     case "image":
       if (component.url) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
-          `${sectionName}-items-${itemName}-wrapper`
+          `${sectionName}-items-${itemName}`
         ][`${sectionName}-items-${itemName}-${componentsName}`][
-          `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
         ] = createImage(
           application.content.sections[`${sectionName}`][
             `${sectionName}-items`
-          ][`${sectionName}-items-${itemName}-wrapper`][
+          ][`${sectionName}-items-${itemName}`][
             `${sectionName}-items-${itemName}-${componentsName}`
           ][
-            `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
+            `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
           ],
           component.url
         )
@@ -315,14 +325,28 @@ function iterateComponent(
       break
     case "button":
       application.content.sections[`${sectionName}`][`${sectionName}-items`][
-        `${sectionName}-items-${itemName}-wrapper`
+        `${sectionName}-items-${itemName}`
       ][`${sectionName}-items-${itemName}-${componentsName}`][
-        `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
+        `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
       ] = createButton(
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
-          `${sectionName}-items-${itemName}-wrapper`
+          `${sectionName}-items-${itemName}`
         ][`${sectionName}-items-${itemName}-${componentsName}`][
-          `${sectionName}-items-${itemName}-${componentsName}-${componentName}-wrapper`
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+        ],
+        component
+      )
+      break
+    case "textfield":
+      application.content.sections[`${sectionName}`][`${sectionName}-items`][
+        `${sectionName}-items-${itemName}`
+      ][`${sectionName}-items-${itemName}-${componentsName}`][
+        `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+      ] = createTextfield(
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
+        ][`${sectionName}-items-${itemName}-${componentsName}`][
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
         ],
         component
       )
@@ -375,6 +399,43 @@ function createButton(parent: any, button: Item) {
     }
   }
   parent = { ...parent, ...buttonData }
+
+  return parent
+}
+
+function createTextfield(parent: any, textfield: Item) {
+  let textfieldData = { textfield: {} }
+
+  textfieldData = {
+    textfield: { variable: textfield.name },
+  }
+
+  if (textfield.value) {
+    textfieldData.textfield = {
+      ...textfieldData.textfield,
+      value: textfield.value,
+    }
+  }
+  if (textfield.placeholder) {
+    textfieldData.textfield = {
+      ...textfieldData.textfield,
+      placeholder: textfield.placeholder,
+    }
+  }
+  if (textfield.keyboard) {
+    textfieldData.textfield = {
+      ...textfieldData.textfield,
+      keyboard: textfield.keyboard,
+    }
+  }
+  if (textfield.focus) {
+    textfieldData.textfield = {
+      ...textfieldData.textfield,
+      focus: textfield.focus,
+    }
+  }
+
+  parent = { ...parent, ...textfieldData }
 
   return parent
 }

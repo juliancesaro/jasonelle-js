@@ -1,8 +1,7 @@
 {
   "$jason": {
     "head": {
-      "title": "Hello world!",
-      "tiitle": "Hello world!"
+      "title": "Hello world!"
     },
     "body": {
       "sections": [
@@ -82,6 +81,22 @@
                   "href": {
                     "url": "https://jasonelle.com/docs",
                     "alt": "Jasonelle documentation"
+                  }
+                },
+                {
+                  "type": "textfield",
+                  "name": "status",
+                  "placeholder": "Status update",
+                  "style": {
+                    "placeholder_color": "#cecece",
+                    "font": "HelveticaNeue",
+                    "align": "center",
+                    "width": "200",
+                    "height": "60",
+                    "autocorrect": "true",
+                    "autocapitalize": "true",
+                    "spellcheck": "true",
+                    "size": "12"
                   }
                 }
               ]
