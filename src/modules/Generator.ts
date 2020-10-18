@@ -120,6 +120,9 @@ function iterateItem(
   if (item.textfield) {
     createTextfield(dom, sectionName, itemName, item.textfield)
   }
+  if (item.textarea) {
+    createTextarea(dom, sectionName, itemName, item.textarea)
+  }
   if (item[`${itemName}-horizontal-components`]) {
     iterateComponents(
       dom,
@@ -205,4 +208,28 @@ function createTextfield(
   }
 
   dom.window.document.getElementById(parentName)?.appendChild(appTextfield)
+}
+
+function createTextarea(
+  dom: JSDOM,
+  parentName: string,
+  id: string,
+  textarea: any
+) {
+  let appTextarea = dom.window.document.createElement('textarea')
+  appTextarea.id = id
+  if (textarea.value) {
+    appTextarea.setAttribute('value', textarea.value)
+  }
+  if (textarea.placeholder) {
+    appTextarea.setAttribute('placeholder', textarea.placeholder)
+  }
+  if (textarea.keyboard) {
+    appTextarea.setAttribute('inputmode', textarea.keyboard)
+  }
+  if (textarea.focus) {
+    appTextarea.toggleAttribute('autofocus')
+  }
+
+  dom.window.document.getElementById(parentName)?.appendChild(appTextarea)
 }

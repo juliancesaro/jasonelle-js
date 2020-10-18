@@ -1,13 +1,13 @@
-import { Jason } from "./components/Jason"
-import { Head } from "./components/Head"
-import { Title } from "./components/Title"
-import { Body } from "./components/Body"
-import { Sections } from "./components/Sections"
-import { Section } from "./components/Section"
-import { Items } from "./components/Items"
-import { Item } from "./components/Item"
-import { Components } from "./components/Components"
-import { Style } from "./components/Style"
+import { Jason } from './components/Jason'
+import { Head } from './components/Head'
+import { Title } from './components/Title'
+import { Body } from './components/Body'
+import { Sections } from './components/Sections'
+import { Section } from './components/Section'
+import { Items } from './components/Items'
+import { Item } from './components/Item'
+import { Components } from './components/Components'
+import { Style } from './components/Style'
 
 /**
  * 'Iterate' functions:
@@ -34,7 +34,7 @@ function iterateHead(application: any, head: Head) {
   application = { ...application, metadata: {} }
   for (const component in head) {
     switch (component) {
-      case "title":
+      case 'title':
         application.metadata = createTitle(application.metadata, head.title)
         break
     }
@@ -57,7 +57,7 @@ function iterateBody(application: any, body: Body) {
   application = { ...application, content: {} }
   for (const bodyComponent in body) {
     switch (bodyComponent) {
-      case "sections":
+      case 'sections':
         {
           application = iterateSections(application, body.sections)
         }
@@ -87,7 +87,7 @@ function iterateSection(
   }
   for (const sectionItem in section) {
     switch (sectionItem) {
-      case "items":
+      case 'items':
         application = iterateItems(
           application,
           section.items,
@@ -124,7 +124,7 @@ function iterateItem(
   }
 
   switch (item.type) {
-    case "label":
+    case 'label':
       if (item.href) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
           `${sectionName}-items-${itemName}`
@@ -145,7 +145,7 @@ function iterateItem(
         )
       }
       break
-    case "image":
+    case 'image':
       if (item.url) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
           `${sectionName}-items-${itemName}`
@@ -157,7 +157,7 @@ function iterateItem(
         )
       }
       break
-    case "button":
+    case 'button':
       application.content.sections[`${sectionName}`][`${sectionName}-items`][
         `${sectionName}-items-${itemName}`
       ] = createButton(
@@ -167,7 +167,7 @@ function iterateItem(
         item
       )
       break
-    case "textfield":
+    case 'textfield':
       application.content.sections[`${sectionName}`][`${sectionName}-items`][
         `${sectionName}-items-${itemName}`
       ] = createTextfield(
@@ -177,8 +177,18 @@ function iterateItem(
         item
       )
       break
+    case 'textarea':
+      application.content.sections[`${sectionName}`][`${sectionName}-items`][
+        `${sectionName}-items-${itemName}`
+      ] = createTextarea(
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
+        ],
+        item
+      )
+      break
     // Component cases
-    case "vertical":
+    case 'vertical':
       if (item.components) {
         application = iterateComponents(
           application,
@@ -189,7 +199,7 @@ function iterateItem(
         )
       }
       break
-    case "horizontal":
+    case 'horizontal':
       if (item.components) {
         application = iterateComponents(
           application,
@@ -236,19 +246,19 @@ function iterateComponents(
       `component-${i}`
     )
   }
-  if (orientation === "horizontal") {
+  if (orientation === 'horizontal') {
     application.style = {
       ...application.style,
       [`${sectionName}-items-${itemName}-${orientation}-components`]: {
-        display: "flex",
+        display: 'flex',
       },
     }
-  } else if (orientation === "vertical") {
+  } else if (orientation === 'vertical') {
     application.style = {
       ...application.style,
       [`${sectionName}-items-${itemName}-${orientation}-components`]: {
-        display: "flex",
-        ["flex-direction"]: "column",
+        display: 'flex',
+        ['flex-direction']: 'column',
       },
     }
   }
@@ -272,7 +282,7 @@ function iterateComponent(
     [`${sectionName}-items-${itemName}-${componentsName}-${componentName}`]: {},
   }
   switch (component.type) {
-    case "label":
+    case 'label':
       if (component.href) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
           `${sectionName}-items-${itemName}`
@@ -305,7 +315,7 @@ function iterateComponent(
         )
       }
       break
-    case "image":
+    case 'image':
       if (component.url) {
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
           `${sectionName}-items-${itemName}`
@@ -323,7 +333,7 @@ function iterateComponent(
         )
       }
       break
-    case "button":
+    case 'button':
       application.content.sections[`${sectionName}`][`${sectionName}-items`][
         `${sectionName}-items-${itemName}`
       ][`${sectionName}-items-${itemName}-${componentsName}`][
@@ -337,12 +347,26 @@ function iterateComponent(
         component
       )
       break
-    case "textfield":
+    case 'textfield':
       application.content.sections[`${sectionName}`][`${sectionName}-items`][
         `${sectionName}-items-${itemName}`
       ][`${sectionName}-items-${itemName}-${componentsName}`][
         `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
       ] = createTextfield(
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
+        ][`${sectionName}-items-${itemName}-${componentsName}`][
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+        ],
+        component
+      )
+      break
+    case 'textarea':
+      application.content.sections[`${sectionName}`][`${sectionName}-items`][
+        `${sectionName}-items-${itemName}`
+      ][`${sectionName}-items-${itemName}-${componentsName}`][
+        `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+      ] = createTextarea(
         application.content.sections[`${sectionName}`][`${sectionName}-items`][
           `${sectionName}-items-${itemName}`
         ][`${sectionName}-items-${itemName}-${componentsName}`][
@@ -436,6 +460,43 @@ function createTextfield(parent: any, textfield: Item) {
   }
 
   parent = { ...parent, ...textfieldData }
+
+  return parent
+}
+
+function createTextarea(parent: any, textarea: Item) {
+  let textareaData = { textarea: {} }
+
+  textareaData = {
+    textarea: { variable: textarea.name },
+  }
+
+  if (textarea.value) {
+    textareaData.textarea = {
+      ...textareaData.textarea,
+      value: textarea.value,
+    }
+  }
+  if (textarea.placeholder) {
+    textareaData.textarea = {
+      ...textareaData.textarea,
+      placeholder: textarea.placeholder,
+    }
+  }
+  if (textarea.keyboard) {
+    textareaData.textarea = {
+      ...textareaData.textarea,
+      keyboard: textarea.keyboard,
+    }
+  }
+  if (textarea.focus) {
+    textareaData.textarea = {
+      ...textareaData.textarea,
+      focus: textarea.focus,
+    }
+  }
+
+  parent = { ...parent, ...textareaData }
 
   return parent
 }
