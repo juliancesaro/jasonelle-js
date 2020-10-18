@@ -92,10 +92,6 @@
                     "font": "HelveticaNeue",
                     "align": "center",
                     "width": "200",
-                    "height": "60",
-                    "autocorrect": "true",
-                    "autocapitalize": "true",
-                    "spellcheck": "true",
                     "size": "12"
                   }
                 },
@@ -109,11 +105,8 @@
                     "placeholder_color": "#cecece",
                     "font": "HelveticaNeue",
                     "align": "center",
-                    "width": "100%",
-                    "height": "300",
-                    "autocorrect": "true",
-                    "autocapitalize": "true",
-                    "spellcheck": "true",
+                    "width": "300",
+                    "height": "100",
                     "size": "12"
                   }
                 },
