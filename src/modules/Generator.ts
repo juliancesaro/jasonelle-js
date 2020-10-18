@@ -129,6 +129,9 @@ function iterateItem(
   if (item.switch) {
     createSwitch(dom, sectionName, itemName, item.switch)
   }
+  if (item.space) {
+    createSpace(dom, sectionName, itemName)
+  }
   if (item[`${itemName}-horizontal-components`]) {
     iterateComponents(
       dom,
@@ -267,4 +270,11 @@ function createSwitch(
   }
 
   dom.window.document.getElementById(parentName)?.appendChild(appSwitch)
+}
+
+function createSpace(dom: JSDOM, parentName: string, id: string) {
+  let appSpace = dom.window.document.createElement('div')
+  appSpace.id = id
+
+  dom.window.document.getElementById(parentName)?.appendChild(appSpace)
 }

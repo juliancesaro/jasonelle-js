@@ -207,6 +207,16 @@ function iterateItem(
         item
       )
       break
+    case 'space':
+      application.content.sections[`${sectionName}`][`${sectionName}-items`][
+        `${sectionName}-items-${itemName}`
+      ] = createSpace(
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
+        ],
+        item
+      )
+      break
     // Component cases
     case 'vertical':
       if (item.components) {
@@ -423,6 +433,20 @@ function iterateComponent(
         component
       )
       break
+    case 'space':
+      application.content.sections[`${sectionName}`][`${sectionName}-items`][
+        `${sectionName}-items-${itemName}`
+      ][`${sectionName}-items-${itemName}-${componentsName}`][
+        `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+      ] = createSpace(
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
+        ][`${sectionName}-items-${itemName}-${componentsName}`][
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+        ],
+        component
+      )
+      break
   }
   if (component.style) {
     application.style = {
@@ -595,6 +619,14 @@ function createSwitch(parent: any, switchItem: Item) {
   }
 
   parent = { ...parent, ...switchData }
+
+  return parent
+}
+
+function createSpace(parent: any, space: Item) {
+  let spaceData = { space }
+
+  parent = { ...parent, ...spaceData }
 
   return parent
 }
