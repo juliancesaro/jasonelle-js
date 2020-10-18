@@ -187,6 +187,16 @@ function iterateItem(
         item
       )
       break
+    case 'slider':
+      application.content.sections[`${sectionName}`][`${sectionName}-items`][
+        `${sectionName}-items-${itemName}`
+      ] = createSlider(
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
+        ],
+        item
+      )
+      break
     // Component cases
     case 'vertical':
       if (item.components) {
@@ -375,6 +385,20 @@ function iterateComponent(
         component
       )
       break
+    case 'slider':
+      application.content.sections[`${sectionName}`][`${sectionName}-items`][
+        `${sectionName}-items-${itemName}`
+      ][`${sectionName}-items-${itemName}-${componentsName}`][
+        `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+      ] = createSlider(
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
+        ][`${sectionName}-items-${itemName}-${componentsName}`][
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+        ],
+        component
+      )
+      break
   }
   if (component.style) {
     application.style = {
@@ -497,6 +521,31 @@ function createTextarea(parent: any, textarea: Item) {
   }
 
   parent = { ...parent, ...textareaData }
+
+  return parent
+}
+
+function createSlider(parent: any, slider: Item) {
+  let sliderData = { slider: {} }
+
+  sliderData = {
+    slider: { variable: slider.name },
+  }
+
+  if (slider.value) {
+    sliderData.slider = {
+      ...sliderData.slider,
+      value: slider.value,
+    }
+  }
+  if (slider.action) {
+    sliderData.slider = {
+      ...sliderData.slider,
+      placeholder: slider.placeholder,
+    }
+  }
+
+  parent = { ...parent, ...sliderData }
 
   return parent
 }

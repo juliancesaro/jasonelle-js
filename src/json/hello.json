@@ -116,6 +116,13 @@
                     "spellcheck": "true",
                     "size": "12"
                   }
+                },
+                {
+                  "type": "slider",
+                  "name": "gauge",
+                  "action": {
+                    "trigger": "notice"
+                  }
                 }
               ]
             }
