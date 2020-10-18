@@ -126,6 +126,9 @@ function iterateItem(
   if (item.slider) {
     createSlider(dom, sectionName, itemName, item.slider)
   }
+  if (item.switch) {
+    createSwitch(dom, sectionName, itemName, item.switch)
+  }
   if (item[`${itemName}-horizontal-components`]) {
     iterateComponents(
       dom,
@@ -237,20 +240,31 @@ function createTextarea(
   dom.window.document.getElementById(parentName)?.appendChild(appTextarea)
 }
 
-function createSlider(
-  dom: JSDOM,
-  parentName: string,
-  id: string,
-  textarea: any
-) {
+function createSlider(dom: JSDOM, parentName: string, id: string, slider: any) {
   let appSlider = dom.window.document.createElement('input')
   appSlider.setAttribute('type', 'range')
   appSlider.id = id
-  if (textarea.value) {
-    appSlider.setAttribute('value', textarea.value)
+  if (slider.value) {
+    appSlider.setAttribute('value', slider.value)
   } else {
     appSlider.setAttribute('value', '50')
   }
 
   dom.window.document.getElementById(parentName)?.appendChild(appSlider)
+}
+
+function createSwitch(
+  dom: JSDOM,
+  parentName: string,
+  id: string,
+  switchItem: any
+) {
+  let appSwitch = dom.window.document.createElement('input')
+  appSwitch.setAttribute('type', 'checkbox')
+  appSwitch.id = id
+  if (switchItem.value === 'true') {
+    appSwitch.toggleAttribute('checked')
+  }
+
+  dom.window.document.getElementById(parentName)?.appendChild(appSwitch)
 }

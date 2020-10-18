@@ -123,6 +123,17 @@
                   "action": {
                     "trigger": "notice"
                   }
+                },
+                {
+                  "type": "switch",
+                  "name": "light",
+                  "value": "true",
+                  "action": {
+                    "trigger": "banner",
+                    "options": {
+                      "item": "Light is On?"
+                    }
+                  }
                 }
               ]
             }

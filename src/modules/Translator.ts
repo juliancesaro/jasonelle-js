@@ -197,6 +197,16 @@ function iterateItem(
         item
       )
       break
+    case 'switch':
+      application.content.sections[`${sectionName}`][`${sectionName}-items`][
+        `${sectionName}-items-${itemName}`
+      ] = createSwitch(
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
+        ],
+        item
+      )
+      break
     // Component cases
     case 'vertical':
       if (item.components) {
@@ -399,6 +409,20 @@ function iterateComponent(
         component
       )
       break
+    case 'switch':
+      application.content.sections[`${sectionName}`][`${sectionName}-items`][
+        `${sectionName}-items-${itemName}`
+      ][`${sectionName}-items-${itemName}-${componentsName}`][
+        `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+      ] = createSwitch(
+        application.content.sections[`${sectionName}`][`${sectionName}-items`][
+          `${sectionName}-items-${itemName}`
+        ][`${sectionName}-items-${itemName}-${componentsName}`][
+          `${sectionName}-items-${itemName}-${componentsName}-${componentName}`
+        ],
+        component
+      )
+      break
   }
   if (component.style) {
     application.style = {
@@ -541,11 +565,36 @@ function createSlider(parent: any, slider: Item) {
   if (slider.action) {
     sliderData.slider = {
       ...sliderData.slider,
-      placeholder: slider.placeholder,
+      action: slider.action,
     }
   }
 
   parent = { ...parent, ...sliderData }
+
+  return parent
+}
+
+function createSwitch(parent: any, switchItem: Item) {
+  let switchData = { switch: {} }
+
+  switchData = {
+    switch: { variable: switchItem.name },
+  }
+
+  if (switchItem.value) {
+    switchData.switch = {
+      ...switchData.switch,
+      value: switchItem.value,
+    }
+  }
+  if (switchItem.action) {
+    switchData.switch = {
+      ...switchData.switch,
+      action: switchItem.action,
+    }
+  }
+
+  parent = { ...parent, ...switchData }
 
   return parent
 }
