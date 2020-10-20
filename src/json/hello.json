@@ -4,6 +4,19 @@
       "title": "Hello world!"
     },
     "body": {
+      "header": {
+        "style": {
+          "background": "lightblue"
+        },
+        "title": {
+          "type": "image",
+          "style": {
+            "width": "200",
+            "height": "64"
+          },
+          "url": "https://raw.githubusercontent.com/Jasonette/Instagram-UI-example/master/images/logo.png"
+        }
+      },
       "sections": [
         {
           "items": [

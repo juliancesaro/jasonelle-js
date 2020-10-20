@@ -233,7 +233,6 @@
     "advancedTitle": {
       "title": "Advanced Title",
       "type": "object",
-      "additionalProperties": false,
       "oneOf": [
         {
           "title": "Title with Image",
@@ -249,13 +248,13 @@
               "type": "object",
               "properties": {
                 "width": {
-                  "type": "integer"
+                  "type": "string"
                 },
                 "height": {
-                  "type": "integer"
+                  "type": "string"
                 }
               },
-              "required": ["width, height"]
+              "required": ["width", "height"]
             }
           },
           "required": ["type", "url"]

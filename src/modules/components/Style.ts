@@ -5,4 +5,7 @@ export interface Style {
   font?: string
   size?: string
   width?: string
+  height?: string
+  top?: string
+  left?: string
 }

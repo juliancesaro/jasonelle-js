@@ -3,7 +3,7 @@ import { Title } from './components/Title'
 import { Items } from './components/Items'
 import { Item } from './components/Item'
 import { Components } from './components/Components'
-import { link } from 'fs'
+import { AdvancedTitle } from './components/AdvancedTitle'
 
 /**
  * Iterates through each styles object in the IR and maps their styles to a string.
@@ -84,8 +84,43 @@ function iterateContent(dom: JSDOM, content: any) {
     switch (bodyComponent) {
       case 'sections': {
         iterateSections(dom, content.sections)
+        break
+      }
+      case 'header': {
+        iterateHeader(dom, content.header)
+        break
       }
     }
+  }
+}
+
+function iterateHeader(dom: JSDOM, header: any) {
+  let headerElem = dom.window.document.createElement('header')
+  headerElem.id = 'header'
+  dom.window.document.getElementsByTagName('body')[0].appendChild(headerElem)
+  switch (typeof header.title) {
+    case 'string':
+      createHeaderTitle(dom, header.title)
+      break
+    case 'object':
+      createAdvancedTitle(dom, header.title)
+      break
+  }
+}
+
+function createHeaderTitle(dom: JSDOM, title: Title) {
+  let appTitle = dom.window.document.createElement('p')
+  appTitle.innerHTML = title.toString()
+  dom.window.document.getElementsByTagName('header')[0].appendChild(appTitle)
+}
+
+function createAdvancedTitle(dom: JSDOM, title: AdvancedTitle) {
+  if (title.url) {
+    createImage(dom, 'header', 'header-title', title)
+  } else {
+    let appTitle = dom.window.document.createElement('p')
+    appTitle.innerHTML = title.toString()
+    dom.window.document.getElementsByTagName('header')[0].appendChild(appTitle)
   }
 }
 

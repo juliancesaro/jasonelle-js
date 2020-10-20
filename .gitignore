@@ -3,6 +3,8 @@
 /notes.txt
 
 # Generated js files
-/src/generated
+/src/generated/index.html
+/src/generated/IR.json
+/src/generated/styles.css
 *.js
 

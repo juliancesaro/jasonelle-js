@@ -2,6 +2,8 @@ import { Jason } from './components/Jason'
 import { Head } from './components/Head'
 import { Title } from './components/Title'
 import { Body } from './components/Body'
+import { Header } from './components/Header'
+import { AdvancedTitle } from './components/AdvancedTitle'
 import { Sections } from './components/Sections'
 import { Section } from './components/Section'
 import { Items } from './components/Items'
@@ -12,11 +14,13 @@ import { Style } from './components/Style'
 /**
  * 'Iterate' functions:
  *      - Iterate through data object or property of the data object.
- *      - Add to the application object or property of the application object.
+ *      - Add to the application object or property of the application object
+ *        by calling a 'create' function.
  *      - Return the resulting application object or property.
  *
  * 'Create' functions:
- *      - Add their second paramter as a property of their first parameter.
+ *      - Add their second paramter (the item to be created) as a property of
+ *        their first parameter (the parent object).
  *      - Return the resulting object.
  */
 export function iterateJason(data: Jason) {
@@ -57,6 +61,11 @@ function iterateBody(application: any, body: Body) {
   application = { ...application, content: {} }
   for (const bodyComponent in body) {
     switch (bodyComponent) {
+      case 'header':
+        {
+          application = iterateHeader(application, body.header)
+        }
+        break
       case 'sections':
         {
           application = iterateSections(application, body.sections)
@@ -65,6 +74,55 @@ function iterateBody(application: any, body: Body) {
     }
   }
   return application
+}
+
+function iterateHeader(application: any, header: Header) {
+  application.content = { ...application.content, header: {} }
+  switch (typeof header.title) {
+    case 'string':
+      application.content.header = createTitle(
+        application.content.header,
+        header.title
+      )
+      break
+    case 'object':
+      application.content.header = createAdvancedTitle(
+        application.content.header,
+        header.title
+      )
+      if (header.title.style) {
+        application.style = {
+          ...application.style,
+          'header-title': header.title.style,
+        }
+      }
+      break
+  }
+  if (header.style) {
+    application.style = {
+      ...application.style,
+      header: {
+        ...header.style,
+        display: 'flex',
+        ['justify-content']: 'center',
+      },
+    }
+  }
+  return application
+}
+
+function createAdvancedTitle(parent: any, title: AdvancedTitle) {
+  let titleData = { title: {} }
+  if (title.type === 'image') {
+    titleData.title = { url: title.url }
+  } else {
+    titleData.title = { text: title.text }
+  }
+  parent = {
+    ...parent,
+    ...titleData,
+  }
+  return parent
 }
 
 function iterateSections(application: any, sections: Sections) {
@@ -247,12 +305,19 @@ function iterateItem(
     if (item.type === 'vertical') {
       application.style = {
         ...application.style,
-        [`${sectionName}-items-${itemName}-vertical-components`]: item.style,
+        [`${sectionName}-items-${itemName}-vertical-components`]: {
+          ...item.style,
+          display: 'flex',
+          ['flex-direction']: 'column',
+        },
       }
     } else if (item.type === 'horizontal') {
       application.style = {
         ...application.style,
-        [`${sectionName}-items-${itemName}-horizontal-components`]: item.style,
+        [`${sectionName}-items-${itemName}-horizontal-components`]: {
+          ...item.style,
+          display: 'flex',
+        },
       }
     } else {
       application.style = {
@@ -289,22 +354,6 @@ function iterateComponents(
       `${orientation}-components`,
       `component-${i}`
     )
-  }
-  if (orientation === 'horizontal') {
-    application.style = {
-      ...application.style,
-      [`${sectionName}-items-${itemName}-${orientation}-components`]: {
-        display: 'flex',
-      },
-    }
-  } else if (orientation === 'vertical') {
-    application.style = {
-      ...application.style,
-      [`${sectionName}-items-${itemName}-${orientation}-components`]: {
-        display: 'flex',
-        ['flex-direction']: 'column',
-      },
-    }
   }
   return application
 }

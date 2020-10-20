@@ -11,7 +11,7 @@ var v = new Validator()
 // If JSON is valid, create HTML DOM.
 if (v.validate(data.$jason, schema).errors.length > 0) {
   // Invalid JSON.
-  ;('JSON is invalid!')
+  console.log('JSON is invalid!')
   console.log(v.validate(data.$jason, schema))
 } else {
   // Valid JSON.
