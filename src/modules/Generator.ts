@@ -6,17 +6,11 @@ import { Components } from './components/Components'
 import { link } from 'fs'
 
 /**
- * 'Iterate' functions:
- *      - Iterate through data object or property of the data object.
- *      - Add to the application object or property of the application object.
- *      - Return the resulting application object or property.
- *
- * 'Create' functions:
- *      - Add their second paramter as a property of their first parameter.
- *      - Return the resulting object.
+ * Iterates through each styles object in the IR and maps their styles to a string.
+ * Checks various properties and corrects them to match CSS styles.
+ * This string is returned.
  */
-
-export function iterateStyle(data: any) {
+export function compileStyle(data: any) {
   let styleString = ''
   for (const styleObj in data.style) {
     if (data.style[styleObj].hasOwnProperty('placeholder_color')) {
@@ -31,6 +25,17 @@ export function iterateStyle(data: any) {
   }
   return styleString
 }
+
+/**
+ * 'Iterate' functions:
+ *      - Iterate through data object or property of the data object.
+ *      - Add to the application object or property of the application object.
+ *      - Return the resulting application object or property.
+ *
+ * 'Create' functions:
+ *      - Add their second paramter as a property of their first parameter.
+ *      - Return the resulting object.
+ */
 
 function correctStyles(property: string) {
   if (!isNaN(Number(property))) {

@@ -242,9 +242,23 @@ function iterateItem(
       break
   }
   if (item.style) {
-    application.style = {
-      ...application.style,
-      [`${sectionName}-items-${itemName}`]: item.style,
+    // Check if the items are components, so the styles are added to the components list,
+    // not the parent item which is discarded in generation
+    if (item.type === 'vertical') {
+      application.style = {
+        ...application.style,
+        [`${sectionName}-items-${itemName}-vertical-components`]: item.style,
+      }
+    } else if (item.type === 'horizontal') {
+      application.style = {
+        ...application.style,
+        [`${sectionName}-items-${itemName}-horizontal-components`]: item.style,
+      }
+    } else {
+      application.style = {
+        ...application.style,
+        [`${sectionName}-items-${itemName}`]: item.style,
+      }
     }
   }
   return application

@@ -37,6 +37,9 @@
             },
             {
               "type": "vertical",
+              "style": {
+                "width": "500"
+              },
               "components": [
                 {
                   "type": "label",
