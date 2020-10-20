@@ -4,4 +4,5 @@ export interface Style {
   color?: string
   font?: string
   size?: string
+  width?: string
 }

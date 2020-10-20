@@ -4,21 +4,5 @@
 
 # Generated js files
 /src/generated
-/src/index.js
-/src/modules/Generator.js
-/src/modules/Translator.js
-/src/modules/components/Body.js
-/src/modules/components/Component.js
-/src/modules/components/Components.js
-/src/modules/components/Head.js
-/src/modules/components/Item.js
-/src/modules/components/Items.js
-/src/modules/components/Jason.js
-/src/modules/components/Label.js
-/src/modules/components/Link.js
-/src/modules/components/Section.js
-/src/modules/components/Sections.js
-/src/modules/components/Style.js
-/src/modules/components/Title.js
-
+*.js
 
