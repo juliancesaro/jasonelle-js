@@ -3,7 +3,7 @@ import { Title } from './components/Title'
 import { Items } from './components/Items'
 import { Item } from './components/Item'
 import { Components } from './components/Components'
-import { AdvancedTitle } from './components/AdvancedTitle'
+import { AdvancedTitle } from './components/header/AdvancedTitle'
 
 /**
  * Iterates through each styles object in the IR and maps their styles to a string.

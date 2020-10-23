@@ -2,14 +2,18 @@ import { Jason } from './components/Jason'
 import { Head } from './components/Head'
 import { Title } from './components/Title'
 import { Body } from './components/Body'
-import { Header } from './components/Header'
-import { AdvancedTitle } from './components/AdvancedTitle'
+import { Header } from './components/header/Header'
+import { AdvancedTitle } from './components/header/AdvancedTitle'
 import { Sections } from './components/Sections'
 import { Section } from './components/Section'
 import { Items } from './components/Items'
 import { Item } from './components/Item'
 import { Components } from './components/Components'
+import { Footer } from './components/footer/Footer'
 import { Style } from './components/Style'
+import { FooterTabs } from './components/footer/footertabs/FooterTabs'
+import { FooterTabsItem } from './components/footer/footertabs/FooterTabsItem'
+import { create } from 'domain'
 
 /**
  * 'Iterate' functions:
@@ -69,6 +73,11 @@ function iterateBody(application: any, body: Body) {
       case 'sections':
         {
           application = iterateSections(application, body.sections)
+        }
+        break
+      case 'footer':
+        {
+          application = iterateFooter(application, body.footer)
         }
         break
     }
@@ -691,5 +700,75 @@ function createSpace(parent: any, space: Item) {
 
   parent = { ...parent, ...spaceData }
 
+  return parent
+}
+
+function iterateFooter(application: any, footer: Footer) {
+  application.content = { ...application.content, footer: {} }
+
+  if (footer.tabs) {
+    application = iterateFooterTabs(application, footer.tabs)
+  } else if (footer.input) {
+    // application.content.footer = createFooterInput(
+    //   application.content.footer,
+    //   footer.input
+    // )
+  }
+  return application
+}
+
+function iterateFooterTabs(application: any, footerTabs: FooterTabs) {
+  application.content.footer = {
+    ...application.content.footer,
+    ['footer-tabs']: {},
+  }
+  for (let i = 0; i < footerTabs.items.length; i++) {
+    application.content.footer['footer-tabs'] = {
+      ...application.content.footer['footer-tabs'],
+      [`footer-tabs-item-${i}`]: {},
+    }
+    application.content.footer['footer-tabs'][
+      `footer-tabs-item-${i}`
+    ] = createFooterTabsItem(
+      application.content.footer['footer-tabs'][`footer-tabs-item-${i}`],
+      footerTabs.items[i]
+    )
+    if (footerTabs.items[i].style) {
+      application.style = {
+        ...application.style,
+        [`footer-tabs-item-${i}`]: footerTabs.items[i].style,
+      }
+    }
+  }
+  if (footerTabs.style) {
+    application.style = {
+      ...application.style,
+      ['footer-tabs']: footerTabs.style,
+    }
+  }
+  return application
+}
+
+function createFooterTabsItem(parent: any, footerTabsItem: FooterTabsItem) {
+  let tabsItemData = {}
+  if (footerTabsItem.text) {
+    tabsItemData = { ...tabsItemData, text: footerTabsItem.text }
+  }
+  if (footerTabsItem.image) {
+    tabsItemData = { ...tabsItemData, image: footerTabsItem.image }
+  }
+  if (footerTabsItem.badge) {
+    tabsItemData = { ...tabsItemData, badge: footerTabsItem.badge }
+  }
+  if (footerTabsItem.url) {
+    tabsItemData = { ...tabsItemData, url: footerTabsItem.url }
+  }
+  if (footerTabsItem.href) {
+    tabsItemData = { ...tabsItemData, href: footerTabsItem.href }
+  }
+  parent = {
+    ...parent,
+    ...tabsItemData,
+  }
   return parent
 }
