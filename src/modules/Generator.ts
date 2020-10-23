@@ -18,6 +18,10 @@ export function compileStyle(data: any) {
       styleString += `#${styleObj}::placeholder{${styles}}`
       delete data.style[styleObj].placeholder_color
     }
+    if (data.style[styleObj].hasOwnProperty('size')) {
+      data.style[styleObj]['font-size'] = data.style[styleObj]['size']
+      delete data.style[styleObj]['size']
+    }
     const styles = Object.entries(data.style[styleObj])
       .map(([k, v]) => `${correctStyles(k)}:${correctStyles(String(v))}`)
       .join(';')
@@ -82,12 +86,16 @@ function createTitle(dom: JSDOM, title: Title) {
 function iterateContent(dom: JSDOM, content: any) {
   for (const bodyComponent in content) {
     switch (bodyComponent) {
+      case 'header': {
+        iterateHeader(dom, content.header)
+        break
+      }
       case 'sections': {
         iterateSections(dom, content.sections)
         break
       }
-      case 'header': {
-        iterateHeader(dom, content.header)
+      case 'footer': {
+        iterateFooter(dom, content.footer)
         break
       }
     }
@@ -218,6 +226,53 @@ function iterateComponents(
   for (const componentItem in components) {
     const component = components[componentItem]
     iterateItem(dom, id, componentItem, component)
+  }
+}
+
+function iterateFooter(dom: JSDOM, footer: any) {
+  let footerElem = dom.window.document.createElement('footer')
+  footerElem.id = 'footer'
+  dom.window.document.getElementsByTagName('body')[0].appendChild(footerElem)
+
+  if (footer['footer-tabs']) {
+    iterateFooterTabs(dom, footer['footer-tabs'])
+  } else if (footer.input) {
+    // application.content.footer = createFooterInput(
+    //   application.content.footer,
+    //   footer.input
+    // )
+  }
+}
+
+function iterateFooterTabs(dom: JSDOM, footerTabs: any) {
+  for (const tab in footerTabs) {
+    createFooterTabsItem(dom, 'footer', tab, footerTabs[tab])
+  }
+}
+
+function createFooterTabsItem(
+  dom: JSDOM,
+  parentName: string,
+  id: string,
+  footerTabsItem: any
+) {
+  let itemLabel = dom.window.document.createElement('a')
+  itemLabel.id = id
+  dom.window.document.getElementById(parentName)?.appendChild(itemLabel)
+  // if (footerTabsItem.badge) {
+  //   tabsItemData = { ...tabsItemData, badge: footerTabsItem.badge }
+  // }
+  if (footerTabsItem.image) {
+    createImage(dom, id, `${id}-icon`, footerTabsItem.image)
+  }
+  if (footerTabsItem.text) {
+    createLabel(dom, id, `${id}-text`, footerTabsItem.text)
+  }
+  if (footerTabsItem.url) {
+    itemLabel.href = footerTabsItem.url
+  }
+  if (footerTabsItem.href) {
+    itemLabel.href = footerTabsItem.href
   }
 }
 

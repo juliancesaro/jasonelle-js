@@ -11,8 +11,8 @@
         "title": {
           "type": "image",
           "style": {
-            "width": "200",
-            "height": "64"
+            "width": "400",
+            "height": "128"
           },
           "url": "https://raw.githubusercontent.com/Jasonette/Instagram-UI-example/master/images/logo.png"
         }
@@ -156,7 +156,7 @@
               "image": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/images/home.png",
               "text": "Home",
               "style": {
-                "height": "21"
+                "height": "80"
               },
               "url": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/home.json"
             },
@@ -164,7 +164,7 @@
               "image": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/images/notifications.png",
               "text": "Notifications",
               "style": {
-                "height": "21"
+                "height": "80"
               },
               "url": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/notifications.json"
             },
@@ -172,7 +172,7 @@
               "image": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/images/moments.png",
               "text": "Moments",
               "style": {
-                "height": "21"
+                "height": "80"
               },
               "url": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/moments.json"
             },
@@ -180,7 +180,7 @@
               "image": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/images/messages.png",
               "text": "Messages",
               "style": {
-                "height": "21"
+                "height": "80"
               },
               "url": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/messages.json"
             },
@@ -188,7 +188,7 @@
               "image": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/images/me.png",
               "text": "Me",
               "style": {
-                "height": "21"
+                "height": "80"
               },
               "url": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/me.json"
             }

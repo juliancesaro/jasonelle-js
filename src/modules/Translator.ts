@@ -714,6 +714,16 @@ function iterateFooter(application: any, footer: Footer) {
     //   footer.input
     // )
   }
+  application.style = {
+    ...application.style,
+    footer: {
+      position: 'absolute',
+      bottom: '0',
+      width: '100%',
+      display: 'flex',
+      ['justify-content']: 'space-evenly',
+    },
+  }
   return application
 }
 
@@ -736,8 +746,12 @@ function iterateFooterTabs(application: any, footerTabs: FooterTabs) {
     if (footerTabs.items[i].style) {
       application.style = {
         ...application.style,
-        [`footer-tabs-item-${i}`]: footerTabs.items[i].style,
+        [`footer-tabs-item-${i}-icon`]: footerTabs.items[i].style,
       }
+    }
+    application.style = {
+      ...application.style,
+      [`footer-tabs-item-${i}`]: { ['text-align']: 'center' },
     }
   }
   if (footerTabs.style) {
@@ -755,7 +769,7 @@ function createFooterTabsItem(parent: any, footerTabsItem: FooterTabsItem) {
     tabsItemData = { ...tabsItemData, text: footerTabsItem.text }
   }
   if (footerTabsItem.image) {
-    tabsItemData = { ...tabsItemData, image: footerTabsItem.image }
+    tabsItemData = { ...tabsItemData, image: { url: footerTabsItem.image } }
   }
   if (footerTabsItem.badge) {
     tabsItemData = { ...tabsItemData, badge: footerTabsItem.badge }
