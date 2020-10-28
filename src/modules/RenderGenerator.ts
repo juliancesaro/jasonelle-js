@@ -64,9 +64,9 @@ export function iterateIR(data: any) {
   createStyleScript += 'element.setAttribute("href", "styles.css");'
   createStyleScript += 'head.appendChild(element);'
 
-  let createStyleFunction = `function createStyle() { ${createStyleScript} }`
+  let createStyleFunction = `function renderStyle() { ${createStyleScript} }`
 
-  script += createStyleFunction + 'createStyle();'
+  script += createStyleFunction + 'renderStyle();'
 
   script += iterateMetadata(script, data.metadata)
   script += iterateContent(script, data.content)
@@ -83,14 +83,14 @@ function iterateMetadata(script: string, metadata: any) {
         break
     }
   }
-  return metadataScript + 'createTitle();'
+  return metadataScript + 'renderTitle();'
 }
 
 function createTitle(title: Title) {
   let createTitleScript = "let element = document.createElement('title');"
   createTitleScript += `element.innerHTML = '${title.toString()}';`
   createTitleScript += 'head.appendChild(element);'
-  let createTitleFunction = `function createTitle() { ${createTitleScript} }`
+  let createTitleFunction = `function renderTitle() { ${createTitleScript} }`
   return createTitleFunction
 }
 
@@ -122,14 +122,14 @@ function iterateHeader(header: any) {
   let createHeaderScript = "let element = document.createElement('header');"
   createHeaderScript += "element.id = 'header';"
   createHeaderScript += 'body.appendChild(element);'
-  let createHeaderFunction = `function createHeader() { ${createHeaderScript} }`
+  let createHeaderFunction = `function renderHeader() { ${createHeaderScript} }`
   headerScript += createHeaderFunction
-  headerScript += 'createHeader();'
+  headerScript += 'renderHeader();'
 
   switch (typeof header.title) {
     case 'string':
       headerScript += createHeaderTitle(header.title)
-      headerScript += 'createHeaderTitle();'
+      headerScript += 'renderHeaderTitle();'
       break
     case 'object':
       headerScript += createAdvancedTitle(header.title)
@@ -143,7 +143,7 @@ function createHeaderTitle(title: Title) {
   createHeaderTitleScript += `appTitle.innerHTML = '${title.toString()}';`
   createHeaderTitleScript +=
     "document.getElementsByTagName('header')[0].appendChild(element);"
-  let createHeaderTitleFunction = `function createHeaderTitle() { ${createHeaderTitleScript} }`
+  let createHeaderTitleFunction = `function renderHeaderTitle() { ${createHeaderTitleScript} }`
   return createHeaderTitleFunction
 }
 
@@ -151,13 +151,13 @@ function createAdvancedTitle(title: AdvancedTitle) {
   let createAdvancedTitleScript = ''
   if (title.url) {
     createAdvancedTitleScript += createImage()
-    return (createAdvancedTitleScript += `createImage('header', 'header-title', '${title.url}');`)
+    return (createAdvancedTitleScript += `renderImage('header', 'header-title', '${title.url}');`)
   } else {
     createAdvancedTitleScript += "let element = document.createElement('p');"
     createAdvancedTitleScript += `element.innerHTML = '${title.toString()};'`
     createAdvancedTitleScript +=
       "document.getElementsByTagName('header')[0].appendChild(element);"
-    let createAdvancedTitleFunction = `function createAdvancedTitle() { ${createAdvancedTitleScript} }`
+    let createAdvancedTitleFunction = `function renderAdvancedTitle() { ${createAdvancedTitleScript} }`
     return createAdvancedTitleFunction
   }
 }
@@ -168,9 +168,9 @@ function iterateSections(sections: any) {
   createSectionsScript += "element.id = 'sections';"
   createSectionsScript +=
     "document.getElementsByTagName('body')[0].appendChild(element);"
-  let createSectionsFunction = `function createSections() { ${createSectionsScript} }`
+  let createSectionsFunction = `function renderSections() { ${createSectionsScript} }`
   sectionsScript += createSectionsFunction
-  sectionsScript += 'createSections();'
+  sectionsScript += 'renderSections();'
   for (const sectionsItem in sections) {
     let sectionName = sectionsItem
     let section = sections[sectionsItem]
@@ -185,9 +185,9 @@ function iterateSection(sectionName: string, section: any) {
   createSectionScript += `element.id = sectionName;`
   createSectionScript +=
     "document.getElementById('sections').appendChild(element);"
-  let createSectionFunction = `function createSection(sectionName) { ${createSectionScript} }`
+  let createSectionFunction = `function renderSection(sectionName) { ${createSectionScript} }`
   sectionScript += createSectionFunction
-  sectionScript += `createSection('${sectionName}');`
+  sectionScript += `renderSection('${sectionName}');`
   if (section[`${sectionName}-items`]) {
     sectionScript += iterateItems(sectionName, section[`${sectionName}-items`])
   }
@@ -199,9 +199,9 @@ function iterateItems(sectionName: string, items: Items) {
   let createItemsScript = "let element = document.createElement('div');"
   createItemsScript += 'element.id = `${sectionName}-items`;'
   createItemsScript += `document.getElementById(sectionName).appendChild(element);`
-  let createItemsFunction = `function createItems(sectionName) { ${createItemsScript} }`
+  let createItemsFunction = `function renderItems(sectionName) { ${createItemsScript} }`
   itemsScript += createItemsFunction
-  itemsScript += `createItems('${sectionName}');`
+  itemsScript += `renderItems('${sectionName}');`
   for (const itemsItem in items) {
     let itemName = itemsItem
     let item = items[itemsItem]
@@ -214,17 +214,19 @@ function iterateItem(sectionName: string, itemName: string, item: any) {
   let itemScript = ''
   if (item.label) {
     itemScript += createLabel()
-    itemScript += `createLabel('${sectionName}', '${itemName}', "${item.label}");`
+    itemScript += `renderLabel('${sectionName}', '${itemName}', "${item.label}");`
   }
   if (item.link) {
     itemScript += createLink()
-    itemScript += `createLink('${sectionName}', '${itemName}', {url: '${item.link.url}', alt: '${item.link.alt}', text: '${item.link.text}'});`
+    itemScript += `renderLink('${sectionName}', '${itemName}', {url: '${item.link.url}', alt: '${item.link.alt}', text: '${item.link.text}'});`
   }
-  //   if (item.image) {
-  //     createImage(dom, sectionName, itemName, item.image)
-  //   }
+  if (item.image) {
+    itemScript += createImage()
+    itemScript += `renderImage('${sectionName}', '${itemName}', '${item.image.url}');`
+  }
   //   if (item.button) {
-  //     createButton(dom, sectionName, itemName, item.button)
+  //     itemScript += createButton()
+  //     itemScript += `renderButton('${sectionName}', '${itemName}', '${item.button}');`
   //   }
   //   if (item.textfield) {
   //     createTextfield(dom, sectionName, itemName, item.textfield)
@@ -267,9 +269,9 @@ function iterateComponents(
   let createComponentsScript = "let element = document.createElement('div');"
   createComponentsScript += 'element.id = id;'
   createComponentsScript += `document.getElementById('${parentName}').appendChild(element);`
-  let createComponentsFunction = `function createComponents(parentName, id) { ${createComponentsScript} }`
+  let createComponentsFunction = `function renderComponents(parentName, id) { ${createComponentsScript} }`
   componentsScript += createComponentsFunction
-  componentsScript += `createComponents('${parentName}', '${id}');`
+  componentsScript += `renderComponents('${parentName}', '${id}');`
   for (const componentItem in components) {
     const component = components[componentItem]
     componentsScript += iterateItem(id, componentItem, component)
@@ -329,7 +331,7 @@ function createLabel() {
   createLabelScript += `element.id = id;`
   createLabelScript += `element.innerHTML = label;`
   createLabelScript += `document.getElementById(parentName).appendChild(element);`
-  let createLabelFunction = `function createLabel(parentName, id, label) { ${createLabelScript} }`
+  let createLabelFunction = `function renderLabel(parentName, id, label) { ${createLabelScript} }`
   return createLabelFunction
 }
 
@@ -340,7 +342,7 @@ function createLink() {
   createLinkScript += "element.setAttribute('alt', link.alt);"
   createLinkScript += `element.innerHTML = link.text;`
   createLinkScript += `document.getElementById(parentName).appendChild(element);`
-  let createLinkFunction = `function createLink(parentName, id, link) { ${createLinkScript} }`
+  let createLinkFunction = `function renderLink(parentName, id, link) { ${createLinkScript} }`
   return createLinkFunction
 }
 
@@ -349,7 +351,7 @@ function createImage() {
   createImageScript += `element.id = id;`
   createImageScript += `element.src = url;`
   createImageScript += `document.getElementById(parentName).appendChild(element);`
-  let createImageFunction = `function createImage(parentName, id, url) { ${createImageScript} }`
+  let createImageFunction = `function renderImage(parentName, id, url) { ${createImageScript} }`
   return createImageFunction
 }
 
