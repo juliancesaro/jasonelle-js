@@ -30,17 +30,6 @@ export function compileStyle(data: any) {
   return styleString
 }
 
-/**
- * 'Iterate' functions:
- *      - Iterate through data object or property of the data object.
- *      - Add to the application object or property of the application object.
- *      - Return the resulting application object or property.
- *
- * 'Create' functions:
- *      - Add their second paramter as a property of their first parameter.
- *      - Return the resulting object.
- */
-
 function correctStyles(property: string) {
   if (!isNaN(Number(property))) {
     return `${property}px`
@@ -53,6 +42,16 @@ function correctStyles(property: string) {
   }
 }
 
+/**
+ * 'Iterate' functions:
+ *      - Iterate through data object or property of the data object.
+ *      - Add to the application object or property of the application object.
+ *      - Return the resulting application object or property.
+ *
+ * 'Create' functions:
+ *      - Add their second paramter as a property of their first parameter.
+ *      - Return the resulting object.
+ */
 export function iterateIR(data: any) {
   let dom = new JSDOM(`<!DOCTYPE html>`)
 

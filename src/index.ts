@@ -15,7 +15,7 @@ if (v.validate(data.$jason, schema).errors.length > 0) {
   console.log(v.validate(data.$jason, schema))
 } else {
   /**
-   * First way of creating application: through creating dom and writing 
+   * First way of creating application: through creating dom and writing
    * to html (static)
    */
   // Valid JSON.
@@ -30,7 +30,7 @@ if (v.validate(data.$jason, schema).errors.length > 0) {
   // fs.writeFileSync('src/generated/styles.css', style)
 
   /**
-   * Second way of creating application: through creating js file and writing 
+   * Second way of creating application: through creating js file and writing
    * to html (static)
    */
 

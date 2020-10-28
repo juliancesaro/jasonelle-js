@@ -21,6 +21,10 @@
         {
           "items": [
             {
+              "type": "label",
+              "text": "View documentation"
+            },
+            {
               "type": "horizontal",
               "components": [
                 {

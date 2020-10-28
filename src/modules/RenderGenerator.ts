@@ -30,17 +30,6 @@ export function compileStyle(data: any) {
   return styleString
 }
 
-/**
- * 'Iterate' functions:
- *      - Iterate through data object or property of the data object.
- *      - Add to the application object or property of the application object.
- *      - Return the resulting application object or property.
- *
- * 'Create' functions:
- *      - Add their second paramter as a property of their first parameter.
- *      - Return the resulting object.
- */
-
 function correctStyles(property: string) {
   if (!isNaN(Number(property))) {
     return `${property}px`
@@ -70,182 +59,223 @@ export function iterateIR(data: any) {
   let script = "let head = document.getElementsByTagName('head')[0];"
   script += "let body = document.getElementsByTagName('body')[0];"
 
-  let createStyle = "let element = document.createElement('link');"
-  createStyle += 'element.setAttribute("rel", "stylesheet");'
-  createStyle += 'element.setAttribute("href", "styles.css");'
-  createStyle += 'head.appendChild(element);'
+  let createStyleScript = "let element = document.createElement('link');"
+  createStyleScript += 'element.setAttribute("rel", "stylesheet");'
+  createStyleScript += 'element.setAttribute("href", "styles.css");'
+  createStyleScript += 'head.appendChild(element);'
 
-  let createStyleFunction = `function createStyle() { ${createStyle} }`
-
-  iterateMetadata(script, data.metadata)
-  iterateContent(script, data.content)
+  let createStyleFunction = `function createStyle() { ${createStyleScript} }`
 
   script += createStyleFunction + 'createStyle();'
+
+  script += iterateMetadata(script, data.metadata)
+  script += iterateContent(script, data.content)
 
   return script
 }
 
 function iterateMetadata(script: string, metadata: any) {
-  //   for (const component in metadata) {
-  //     switch (component) {
-  //       case 'title':
-  //         createTitle(dom, metadata.title)
-  //         break
-  //     }
-  //   }
+  let metadataScript = ''
+  for (const component in metadata) {
+    switch (component) {
+      case 'title':
+        metadataScript += createTitle(metadata.title)
+        break
+    }
+  }
+  return metadataScript + 'createTitle();'
 }
 
-// function createTitle(dom: JSDOM, title: Title) {
-//   let appTitle = dom.window.document.createElement('title')
-//   appTitle.innerHTML = title.toString()
-//   dom.window.document.getElementsByTagName('head')[0].appendChild(appTitle)
-// }
+function createTitle(title: Title) {
+  let createTitleScript = "let element = document.createElement('title');"
+  createTitleScript += `element.innerHTML = '${title.toString()}';`
+  createTitleScript += 'head.appendChild(element);'
+  let createTitleFunction = `function createTitle() { ${createTitleScript} }`
+  return createTitleFunction
+}
 
 function iterateContent(script: string, content: any) {
-  //   for (const bodyComponent in content) {
-  //     switch (bodyComponent) {
-  //       case 'header': {
-  //         iterateHeader(dom, content.header)
-  //         break
-  //       }
-  //       case 'sections': {
-  //         iterateSections(dom, content.sections)
-  //         break
-  //       }
-  //       case 'footer': {
-  //         iterateFooter(dom, content.footer)
-  //         break
-  //       }
-  //     }
-  //   }
+  let contentScript = ''
+  for (const bodyComponent in content) {
+    switch (bodyComponent) {
+      case 'header': {
+        contentScript += iterateHeader(content.header)
+        break
+      }
+      case 'sections': {
+        contentScript += iterateSections(content.sections)
+        break
+      }
+      //   case 'footer': {
+      //     iterateFooter(dom, content.footer)
+      //     break
+      //   }
+    }
+  }
+  return contentScript
 }
 
-// function iterateHeader(dom: JSDOM, header: any) {
-//   let headerElem = dom.window.document.createElement('header')
-//   headerElem.id = 'header'
-//   dom.window.document.getElementsByTagName('body')[0].appendChild(headerElem)
-//   switch (typeof header.title) {
-//     case 'string':
-//       createHeaderTitle(dom, header.title)
-//       break
-//     case 'object':
-//       createAdvancedTitle(dom, header.title)
-//       break
-//   }
-// }
+function iterateHeader(header: any) {
+  let headerScript = ''
+  // Create function for creating header element
+  // This could be in its own 'createHeader()' function
+  let createHeaderScript = "let element = document.createElement('header');"
+  createHeaderScript += "element.id = 'header';"
+  createHeaderScript += 'body.appendChild(element);'
+  let createHeaderFunction = `function createHeader() { ${createHeaderScript} }`
+  headerScript += createHeaderFunction
+  headerScript += 'createHeader();'
 
-// function createHeaderTitle(dom: JSDOM, title: Title) {
-//   let appTitle = dom.window.document.createElement('p')
-//   appTitle.innerHTML = title.toString()
-//   dom.window.document.getElementsByTagName('header')[0].appendChild(appTitle)
-// }
+  switch (typeof header.title) {
+    case 'string':
+      headerScript += createHeaderTitle(header.title)
+      headerScript += 'createHeaderTitle();'
+      break
+    case 'object':
+      headerScript += createAdvancedTitle(header.title)
+      break
+  }
+  return headerScript
+}
 
-// function createAdvancedTitle(dom: JSDOM, title: AdvancedTitle) {
-//   if (title.url) {
-//     createImage(dom, 'header', 'header-title', title)
-//   } else {
-//     let appTitle = dom.window.document.createElement('p')
-//     appTitle.innerHTML = title.toString()
-//     dom.window.document.getElementsByTagName('header')[0].appendChild(appTitle)
-//   }
-// }
+function createHeaderTitle(title: Title) {
+  let createHeaderTitleScript = "let element = document.createElement('p');"
+  createHeaderTitleScript += `appTitle.innerHTML = '${title.toString()}';`
+  createHeaderTitleScript +=
+    "document.getElementsByTagName('header')[0].appendChild(element);"
+  let createHeaderTitleFunction = `function createHeaderTitle() { ${createHeaderTitleScript} }`
+  return createHeaderTitleFunction
+}
 
-// function iterateSections(dom: JSDOM, sections: any) {
-//   let sectionsDiv = dom.window.document.createElement('div')
-//   sectionsDiv.id = 'sections'
-//   dom.window.document.getElementsByTagName('body')[0].appendChild(sectionsDiv)
-//   for (const sectionsItem in sections) {
-//     let sectionName = sectionsItem
-//     let section = sections[sectionsItem]
-//     iterateSection(dom, sectionName, section)
-//   }
-// }
+function createAdvancedTitle(title: AdvancedTitle) {
+  let createAdvancedTitleScript = ''
+  if (title.url) {
+    createAdvancedTitleScript += createImage()
+    return (createAdvancedTitleScript += `createImage('header', 'header-title', '${title.url}');`)
+  } else {
+    createAdvancedTitleScript += "let element = document.createElement('p');"
+    createAdvancedTitleScript += `element.innerHTML = '${title.toString()};'`
+    createAdvancedTitleScript +=
+      "document.getElementsByTagName('header')[0].appendChild(element);"
+    let createAdvancedTitleFunction = `function createAdvancedTitle() { ${createAdvancedTitleScript} }`
+    return createAdvancedTitleFunction
+  }
+}
 
-// function iterateSection(dom: JSDOM, sectionName: string, section: any) {
-//   let sectionDiv = dom.window.document.createElement('div')
-//   sectionDiv.id = sectionName
-//   dom.window.document.getElementById('sections')?.appendChild(sectionDiv)
-//   if (section[`${sectionName}-items`]) {
-//     iterateItems(dom, sectionName, section[`${sectionName}-items`])
-//   }
-// }
+function iterateSections(sections: any) {
+  let sectionsScript = ''
+  let createSectionsScript = "let element = document.createElement('div');"
+  createSectionsScript += "element.id = 'sections';"
+  createSectionsScript +=
+    "document.getElementsByTagName('body')[0].appendChild(element);"
+  let createSectionsFunction = `function createSections() { ${createSectionsScript} }`
+  sectionsScript += createSectionsFunction
+  sectionsScript += 'createSections();'
+  for (const sectionsItem in sections) {
+    let sectionName = sectionsItem
+    let section = sections[sectionsItem]
+    sectionsScript += iterateSection(sectionName, section)
+  }
+  return sectionsScript
+}
 
-// function iterateItems(dom: JSDOM, sectionName: string, items: Items) {
-//   let itemsDiv = dom.window.document.createElement('div')
-//   itemsDiv.id = `${sectionName}-items`
-//   dom.window.document.getElementById(sectionName)?.appendChild(itemsDiv)
-//   for (const itemsItem in items) {
-//     let itemName = itemsItem
-//     let item = items[itemsItem]
-//     iterateItem(dom, `${sectionName}-items`, itemName, item)
-//   }
-// }
+function iterateSection(sectionName: string, section: any) {
+  let sectionScript = ''
+  let createSectionScript = "let element = document.createElement('div');"
+  createSectionScript += `element.id = sectionName;`
+  createSectionScript +=
+    "document.getElementById('sections').appendChild(element);"
+  let createSectionFunction = `function createSection(sectionName) { ${createSectionScript} }`
+  sectionScript += createSectionFunction
+  sectionScript += `createSection('${sectionName}');`
+  if (section[`${sectionName}-items`]) {
+    sectionScript += iterateItems(sectionName, section[`${sectionName}-items`])
+  }
+  return sectionScript
+}
 
-// function iterateItem(
-//   dom: JSDOM,
-//   sectionName: string,
-//   itemName: string,
-//   item: any
-// ) {
-//   if (item.label) {
-//     createLabel(dom, sectionName, itemName, item.label)
-//   }
-//   if (item.link) {
-//     createLink(dom, sectionName, itemName, item.link)
-//   }
-//   if (item.image) {
-//     createImage(dom, sectionName, itemName, item.image)
-//   }
-//   if (item.button) {
-//     createButton(dom, sectionName, itemName, item.button)
-//   }
-//   if (item.textfield) {
-//     createTextfield(dom, sectionName, itemName, item.textfield)
-//   }
-//   if (item.textarea) {
-//     createTextarea(dom, sectionName, itemName, item.textarea)
-//   }
-//   if (item.slider) {
-//     createSlider(dom, sectionName, itemName, item.slider)
-//   }
-//   if (item.switch) {
-//     createSwitch(dom, sectionName, itemName, item.switch)
-//   }
-//   if (item.space) {
-//     createSpace(dom, sectionName, itemName)
-//   }
-//   if (item[`${itemName}-horizontal-components`]) {
-//     iterateComponents(
-//       dom,
-//       item[`${itemName}-horizontal-components`],
-//       sectionName,
-//       `${itemName}-horizontal-components`
-//     )
-//   }
-//   if (item[`${itemName}-vertical-components`]) {
-//     iterateComponents(
-//       dom,
-//       item[`${itemName}-vertical-components`],
-//       sectionName,
-//       `${itemName}-vertical-components`
-//     )
-//   }
-// }
+function iterateItems(sectionName: string, items: Items) {
+  let itemsScript = ''
+  let createItemsScript = "let element = document.createElement('div');"
+  createItemsScript += 'element.id = `${sectionName}-items`;'
+  createItemsScript += `document.getElementById(sectionName).appendChild(element);`
+  let createItemsFunction = `function createItems(sectionName) { ${createItemsScript} }`
+  itemsScript += createItemsFunction
+  itemsScript += `createItems('${sectionName}');`
+  for (const itemsItem in items) {
+    let itemName = itemsItem
+    let item = items[itemsItem]
+    itemsScript += iterateItem(`${sectionName}-items`, itemName, item)
+  }
+  return itemsScript
+}
 
-// function iterateComponents(
-//   dom: JSDOM,
-//   components: Components,
-//   parentName: string,
-//   id: string
-// ) {
-//   let componentsDiv = dom.window.document.createElement('div')
-//   componentsDiv.id = id
-//   dom.window.document.getElementById(parentName)?.appendChild(componentsDiv)
-//   for (const componentItem in components) {
-//     const component = components[componentItem]
-//     iterateItem(dom, id, componentItem, component)
-//   }
-// }
+function iterateItem(sectionName: string, itemName: string, item: any) {
+  let itemScript = ''
+  if (item.label) {
+    itemScript += createLabel()
+    itemScript += `createLabel('${sectionName}', '${itemName}', "${item.label}");`
+  }
+  if (item.link) {
+    itemScript += createLink()
+    itemScript += `createLink('${sectionName}', '${itemName}', {url: '${item.link.url}', alt: '${item.link.alt}', text: '${item.link.text}'});`
+  }
+  //   if (item.image) {
+  //     createImage(dom, sectionName, itemName, item.image)
+  //   }
+  //   if (item.button) {
+  //     createButton(dom, sectionName, itemName, item.button)
+  //   }
+  //   if (item.textfield) {
+  //     createTextfield(dom, sectionName, itemName, item.textfield)
+  //   }
+  //   if (item.textarea) {
+  //     createTextarea(dom, sectionName, itemName, item.textarea)
+  //   }
+  //   if (item.slider) {
+  //     createSlider(dom, sectionName, itemName, item.slider)
+  //   }
+  //   if (item.switch) {
+  //     createSwitch(dom, sectionName, itemName, item.switch)
+  //   }
+  //   if (item.space) {
+  //     createSpace(dom, sectionName, itemName)
+  //   }
+  if (item[`${itemName}-horizontal-components`]) {
+    itemScript += iterateComponents(
+      item[`${itemName}-horizontal-components`],
+      sectionName,
+      `${itemName}-horizontal-components`
+    )
+  }
+  if (item[`${itemName}-vertical-components`]) {
+    itemScript += iterateComponents(
+      item[`${itemName}-vertical-components`],
+      sectionName,
+      `${itemName}-vertical-components`
+    )
+  }
+  return itemScript
+}
+
+function iterateComponents(
+  components: Components,
+  parentName: string,
+  id: string
+) {
+  let componentsScript = ''
+  let createComponentsScript = "let element = document.createElement('div');"
+  createComponentsScript += 'element.id = id;'
+  createComponentsScript += `document.getElementById('${parentName}').appendChild(element);`
+  let createComponentsFunction = `function createComponents(parentName, id) { ${createComponentsScript} }`
+  componentsScript += createComponentsFunction
+  componentsScript += `createComponents('${parentName}', '${id}');`
+  for (const componentItem in components) {
+    const component = components[componentItem]
+    componentsScript += iterateItem(id, componentItem, component)
+  }
+  return componentsScript
+}
 
 // function iterateFooter(dom: JSDOM, footer: any) {
 //   let footerElem = dom.window.document.createElement('footer')
@@ -294,28 +324,34 @@ function iterateContent(script: string, content: any) {
 //   }
 // }
 
-// function createLabel(dom: JSDOM, parentName: string, id: string, label: any) {
-//   let appLabel = dom.window.document.createElement('p')
-//   appLabel.id = id
-//   appLabel.innerHTML = label
-//   dom.window.document.getElementById(parentName)?.appendChild(appLabel)
-// }
+function createLabel() {
+  let createLabelScript = "let element = document.createElement('p');"
+  createLabelScript += `element.id = id;`
+  createLabelScript += `element.innerHTML = label;`
+  createLabelScript += `document.getElementById(parentName).appendChild(element);`
+  let createLabelFunction = `function createLabel(parentName, id, label) { ${createLabelScript} }`
+  return createLabelFunction
+}
 
-// function createLink(dom: JSDOM, parentName: string, id: string, link: any) {
-//   let appLink = dom.window.document.createElement('a')
-//   appLink.id = id
-//   appLink.href = link.url
-//   appLink.setAttribute('alt', link.alt)
-//   appLink.innerHTML = link.text
-//   dom.window.document.getElementById(parentName)?.appendChild(appLink)
-// }
+function createLink() {
+  let createLinkScript = "let element = document.createElement('a');"
+  createLinkScript += `element.id = id;`
+  createLinkScript += `element.href = link.url;`
+  createLinkScript += "element.setAttribute('alt', link.alt);"
+  createLinkScript += `element.innerHTML = link.text;`
+  createLinkScript += `document.getElementById(parentName).appendChild(element);`
+  let createLinkFunction = `function createLink(parentName, id, link) { ${createLinkScript} }`
+  return createLinkFunction
+}
 
-// function createImage(dom: JSDOM, parentName: string, id: string, image: any) {
-//   let appImage = dom.window.document.createElement('img')
-//   appImage.id = id
-//   appImage.src = image.url
-//   dom.window.document.getElementById(parentName)?.appendChild(appImage)
-// }
+function createImage() {
+  let createImageScript = "let element = document.createElement('img');"
+  createImageScript += `element.id = id;`
+  createImageScript += `element.src = url;`
+  createImageScript += `document.getElementById(parentName).appendChild(element);`
+  let createImageFunction = `function createImage(parentName, id, url) { ${createImageScript} }`
+  return createImageFunction
+}
 
 // function createButton(dom: JSDOM, parentName: string, id: string, button: any) {
 //   let appButton = dom.window.document.createElement('button')
