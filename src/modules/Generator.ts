@@ -13,19 +13,37 @@ import { AdvancedTitle } from './components/header/AdvancedTitle'
 export function compileStyle(data: any) {
   let styleString = ''
   for (const styleObj in data.style) {
-    if (data.style[styleObj].hasOwnProperty('placeholder_color')) {
-      const styles = `color:${data.style[styleObj].placeholder_color}`
-      styleString += `#${styleObj}::placeholder{${styles}}`
-      delete data.style[styleObj].placeholder_color
+    if (styleObj !== 'classes') {
+      if (styleObj.includes('class-')) {
+        if (data.style[styleObj].hasOwnProperty('placeholder_color')) {
+          const styles = `color:${data.style[styleObj].placeholder_color}`
+          styleString += `.${styleObj}::placeholder{${styles}}`
+          delete data.style[styleObj].placeholder_color
+        }
+        if (data.style[styleObj].hasOwnProperty('size')) {
+          data.style[styleObj]['font-size'] = data.style[styleObj]['size']
+          delete data.style[styleObj]['size']
+        }
+        const styles = Object.entries(data.style[styleObj])
+          .map(([k, v]) => `${correctStyles(k)}:${correctStyles(String(v))}`)
+          .join(';')
+        styleString += `.${styleObj}{${styles}}`
+      } else {
+        if (data.style[styleObj].hasOwnProperty('placeholder_color')) {
+          const styles = `color:${data.style[styleObj].placeholder_color}`
+          styleString += `#${styleObj}::placeholder{${styles}}`
+          delete data.style[styleObj].placeholder_color
+        }
+        if (data.style[styleObj].hasOwnProperty('size')) {
+          data.style[styleObj]['font-size'] = data.style[styleObj]['size']
+          delete data.style[styleObj]['size']
+        }
+        const styles = Object.entries(data.style[styleObj])
+          .map(([k, v]) => `${correctStyles(k)}:${correctStyles(String(v))}`)
+          .join(';')
+        styleString += `#${styleObj}{${styles}}`
+      }
     }
-    if (data.style[styleObj].hasOwnProperty('size')) {
-      data.style[styleObj]['font-size'] = data.style[styleObj]['size']
-      delete data.style[styleObj]['size']
-    }
-    const styles = Object.entries(data.style[styleObj])
-      .map(([k, v]) => `${correctStyles(k)}:${correctStyles(String(v))}`)
-      .join(';')
-    styleString += `#${styleObj}{${styles}}`
   }
   return styleString
 }
