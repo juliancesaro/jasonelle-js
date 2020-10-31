@@ -17,7 +17,10 @@ export function compileStyle(data: any) {
       if (styleObj.includes('class-')) {
         if (data.style[styleObj].hasOwnProperty('placeholder_color')) {
           const styles = `color:${data.style[styleObj].placeholder_color}`
-          styleString += `.${styleObj}::placeholder{${styles}}`
+          styleString += `.${styleObj.replace(
+            'class-',
+            ''
+          )}::placeholder{${styles}}`
           delete data.style[styleObj].placeholder_color
         }
         if (data.style[styleObj].hasOwnProperty('size')) {
@@ -27,7 +30,7 @@ export function compileStyle(data: any) {
         const styles = Object.entries(data.style[styleObj])
           .map(([k, v]) => `${correctStyles(k)}:${correctStyles(String(v))}`)
           .join(';')
-        styleString += `.${styleObj}{${styles}}`
+        styleString += `.${styleObj.replace('class-', '')}{${styles}}`
       } else {
         if (data.style[styleObj].hasOwnProperty('placeholder_color')) {
           const styles = `color:${data.style[styleObj].placeholder_color}`
@@ -123,12 +126,12 @@ function iterateHeader(dom: JSDOM, header: any) {
   let headerElem = dom.window.document.createElement('header')
   headerElem.id = 'header'
   dom.window.document.getElementsByTagName('body')[0].appendChild(headerElem)
-  switch (typeof header.title) {
+  switch (typeof header['header-title']) {
     case 'string':
-      createHeaderTitle(dom, header.title)
+      createHeaderTitle(dom, header['header-title'])
       break
     case 'object':
-      createAdvancedTitle(dom, header.title)
+      createAdvancedTitle(dom, header['header-title'])
       break
   }
 }
@@ -141,7 +144,7 @@ function createHeaderTitle(dom: JSDOM, title: Title) {
 
 function createAdvancedTitle(dom: JSDOM, title: AdvancedTitle) {
   if (title.url) {
-    createImage(dom, 'header', 'header-title', title)
+    createImage(dom, 'header', 'header-title', '', title)
   } else {
     let appTitle = dom.window.document.createElement('p')
     appTitle.innerHTML = title.toString()
@@ -193,7 +196,7 @@ function iterateItem(
     createLink(dom, sectionName, itemName, item.link)
   }
   if (item.image) {
-    createImage(dom, sectionName, itemName, item.image)
+    createImage(dom, sectionName, itemName, '', item.image)
   }
   if (item.button) {
     createButton(dom, sectionName, itemName, item.button)
@@ -273,23 +276,38 @@ function createFooterTabsItem(
   id: string,
   footerTabsItem: any
 ) {
-  let itemLabel = dom.window.document.createElement('a')
-  itemLabel.id = id
-  dom.window.document.getElementById(parentName)?.appendChild(itemLabel)
-  // if (footerTabsItem.badge) {
-  //   tabsItemData = { ...tabsItemData, badge: footerTabsItem.badge }
-  // }
-  if (footerTabsItem.image) {
-    createImage(dom, id, `${id}-icon`, footerTabsItem.image)
+  let appFooterItem = dom.window.document.createElement('a')
+  appFooterItem.id = id
+  if (footerTabsItem.class) {
+    appFooterItem.className = footerTabsItem.class
   }
-  if (footerTabsItem.text) {
-    createLabel(dom, id, `${id}-text`, footerTabsItem.text)
-  }
-  if (footerTabsItem.url) {
-    itemLabel.href = footerTabsItem.url
-  }
-  if (footerTabsItem.href) {
-    itemLabel.href = footerTabsItem.href
+  dom.window.document.getElementById(parentName)?.appendChild(appFooterItem)
+
+  for (const footerItemComp in footerTabsItem) {
+    // if (footerTabsItem.badge) {
+    //   tabsItemData = { ...tabsItemData, badge: footerTabsItem.badge }
+    // }
+    if (footerTabsItem[footerItemComp].image) {
+      let className = footerTabsItem[footerItemComp].class
+        ? footerTabsItem[footerItemComp].class
+        : ''
+      createImage(
+        dom,
+        id,
+        footerItemComp,
+        className,
+        footerTabsItem[footerItemComp].image
+      )
+    }
+    if (footerTabsItem[footerItemComp].text) {
+      createLabel(dom, id, footerItemComp, footerTabsItem[footerItemComp].text)
+    }
+    if (footerItemComp === 'url') {
+      appFooterItem.href = footerTabsItem.url
+    }
+    if (footerItemComp == 'href') {
+      appFooterItem.href = footerTabsItem.href
+    }
   }
 }
 
@@ -309,9 +327,18 @@ function createLink(dom: JSDOM, parentName: string, id: string, link: any) {
   dom.window.document.getElementById(parentName)?.appendChild(appLink)
 }
 
-function createImage(dom: JSDOM, parentName: string, id: string, image: any) {
+function createImage(
+  dom: JSDOM,
+  parentName: string,
+  id: string,
+  className: string,
+  image: any
+) {
   let appImage = dom.window.document.createElement('img')
   appImage.id = id
+  if (className) {
+    appImage.className = className
+  }
   appImage.src = image.url
   dom.window.document.getElementById(parentName)?.appendChild(appImage)
 }

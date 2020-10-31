@@ -121,11 +121,11 @@ function iterateHeader(application: any, header: Header) {
 }
 
 function createAdvancedTitle(parent: any, title: AdvancedTitle) {
-  let titleData = { title: {} }
+  let titleData = { ['header-title']: {} }
   if (title.type === 'image') {
-    titleData.title = { url: title.url }
+    titleData['header-title'] = { url: title.url }
   } else {
-    titleData.title = { text: title.text }
+    titleData['header-title'] = { text: title.text }
   }
   parent = {
     ...parent,
@@ -295,6 +295,14 @@ function iterateItem(
           item.type
         )
       }
+      application.style = {
+        ...application.style,
+        [`${sectionName}-items-${itemName}-vertical-components`]: {
+          ...item.style,
+          display: 'flex',
+          ['flex-direction']: 'column',
+        },
+      }
       break
     case 'horizontal':
       if (item.components) {
@@ -306,27 +314,23 @@ function iterateItem(
           item.type
         )
       }
-      break
-  }
-  if (item.style) {
-    // Check if the items are components, so the styles are added to the components list,
-    // not the parent item which is discarded in generation
-    if (item.type === 'vertical') {
-      application.style = {
-        ...application.style,
-        [`${sectionName}-items-${itemName}-vertical-components`]: {
-          ...item.style,
-          display: 'flex',
-          ['flex-direction']: 'column',
-        },
-      }
-    } else if (item.type === 'horizontal') {
       application.style = {
         ...application.style,
         [`${sectionName}-items-${itemName}-horizontal-components`]: {
           ...item.style,
           display: 'flex',
         },
+      }
+      break
+  }
+
+  if (item.style) {
+    // Check if the items are components, so the styles are added to the components list,
+    // not the parent item which is discarded in generation
+    if (application.style[`${sectionName}-items-${itemName}`]) {
+      application.style[`${sectionName}-items-${itemName}`] = {
+        ...application.style[`${sectionName}-items-${itemName}`],
+        ...item.style,
       }
     } else {
       application.style = {
@@ -741,6 +745,7 @@ function iterateFooterTabs(application: any, footerTabs: FooterTabs) {
       `footer-tabs-item-${i}`
     ] = createFooterTabsItem(
       application.content.footer['footer-tabs'][`footer-tabs-item-${i}`],
+      `footer-tabs-item-${i}`,
       footerTabs.items[i]
     )
     if (footerTabs.items[i].style) {
@@ -751,7 +756,7 @@ function iterateFooterTabs(application: any, footerTabs: FooterTabs) {
     }
     application.style = {
       ...application.style,
-      [`footer-tabs-item-${i}`]: { ['text-align']: 'center' },
+      [`footer-tabs-item-${i}`]: { ['align']: 'center' },
     }
   }
   if (footerTabs.style) {
@@ -763,13 +768,24 @@ function iterateFooterTabs(application: any, footerTabs: FooterTabs) {
   return application
 }
 
-function createFooterTabsItem(parent: any, footerTabsItem: FooterTabsItem) {
+// Parent name passed down so icon can have its own id
+function createFooterTabsItem(
+  parent: any,
+  parentName: string,
+  footerTabsItem: FooterTabsItem
+) {
   let tabsItemData = {}
-  if (footerTabsItem.text) {
-    tabsItemData = { ...tabsItemData, text: footerTabsItem.text }
-  }
   if (footerTabsItem.image) {
-    tabsItemData = { ...tabsItemData, image: { url: footerTabsItem.image } }
+    tabsItemData = {
+      ...tabsItemData,
+      [`${parentName}-icon`]: { image: { url: footerTabsItem.image } },
+    }
+  }
+  if (footerTabsItem.text) {
+    tabsItemData = {
+      ...tabsItemData,
+      [`${parentName}-text`]: { text: footerTabsItem.text },
+    }
   }
   if (footerTabsItem.badge) {
     tabsItemData = { ...tabsItemData, badge: footerTabsItem.badge }

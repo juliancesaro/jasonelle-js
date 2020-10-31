@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "compile": "tsc src/index.ts --resolveJsonModule && npm start",
+    "compile": "tsc src/index.ts --resolveJsonModule --esModuleInterop && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,12 +19,14 @@
   },
   "homepage": "https://github.com/juliancesaro/Jasonelle-JS#readme",
   "devDependencies": {
+    "@types/lodash": "^4.14.164",
     "@types/node": "^13.13.2"
   },
   "dependencies": {
     "@schemastore/jasonette": "0.0.3",
     "@types/jsdom": "^16.2.3",
     "jsdom": "^16.3.0",
-    "jsonschema": "^1.2.6"
+    "jsonschema": "^1.2.6",
+    "lodash": "^4.17.20"
   }
 }

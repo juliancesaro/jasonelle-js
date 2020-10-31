@@ -15,42 +15,45 @@ if (v.validate(data.$jason, schema).errors.length > 0) {
   console.log('JSON is invalid!')
   console.log(v.validate(data.$jason, schema))
 } else {
+  // Valid JSON.
   /**
    * First way of creating application: through creating dom and writing
    * to html (static)
    */
-  // Valid JSON.
-  // let IR = iterateJason(data.$jason)
 
-  // let dom = iterateIR(IR)
+  let IR = iterateJason(data.$jason)
 
-  // let style = compileStyle(IR)
+  optimiseStyle(IR)
 
-  // fs.writeFileSync('src/generated/IR.json', JSON.stringify(IR))
-  // fs.writeFileSync('src/generated/index.html', dom.serialize())
-  // fs.writeFileSync('src/generated/styles.css', style)
+  let dom = iterateIR(IR)
+
+  let style = compileStyle(IR)
+
+  fs.writeFileSync('src/generated/IR.json', JSON.stringify(IR))
+  fs.writeFileSync('src/generated/index.html', dom.serialize())
+  fs.writeFileSync('src/generated/styles.css', style)
 
   /**
    * Second way of creating application: through creating js file and writing
    * to html (static)
    */
 
-  let IR = iterateJason(data.$jason)
+  // let IR = iterateJason(data.$jason)
 
-  let optimisedIR = optimiseStyle(IR)
+  // let optimisedIR = optimiseStyle(IR)
 
-  let dom = createHTML()
+  // let dom = createHTML()
 
-  let js = render(IR)
+  // let js = render(IR)
 
-  let style = compileStyle(IR)
+  // let style = compileStyle(IR)
 
-  fs.writeFileSync('src/generated/IR.json', JSON.stringify(IR))
-  fs.writeFileSync(
-    'src/generated/optimisedIR.json',
-    JSON.stringify(optimisedIR)
-  )
-  fs.writeFileSync('src/generated/index.html', dom.serialize())
-  fs.writeFileSync('src/generated/script.js', js)
-  fs.writeFileSync('src/generated/styles.css', style)
+  // fs.writeFileSync('src/generated/IR.json', JSON.stringify(IR))
+  // fs.writeFileSync(
+  //   'src/generated/optimisedIR.json',
+  //   JSON.stringify(optimisedIR)
+  // )
+  // fs.writeFileSync('src/generated/index.html', dom.serialize())
+  // fs.writeFileSync('src/generated/script.js', js)
+  // fs.writeFileSync('src/generated/styles.css', style)
 }
