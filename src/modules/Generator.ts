@@ -126,6 +126,10 @@ function iterateHeader(dom: JSDOM, header: any) {
   let headerElem = dom.window.document.createElement('header')
   headerElem.id = 'header'
   dom.window.document.getElementsByTagName('body')[0].appendChild(headerElem)
+  if (header.class) {
+    headerElem.className = header.class
+  }
+
   switch (typeof header['header-title']) {
     case 'string':
       createHeaderTitle(dom, header['header-title'])
@@ -189,29 +193,30 @@ function iterateItem(
   itemName: string,
   item: any
 ) {
+  let className = item.class ? item.class : ''
   if (item.label) {
-    createLabel(dom, sectionName, itemName, item.label)
+    createLabel(dom, sectionName, itemName, className, item.label)
   }
   if (item.link) {
-    createLink(dom, sectionName, itemName, item.link)
+    createLink(dom, sectionName, itemName, className, item.link)
   }
   if (item.image) {
-    createImage(dom, sectionName, itemName, '', item.image)
+    createImage(dom, sectionName, itemName, className, item.image)
   }
   if (item.button) {
-    createButton(dom, sectionName, itemName, item.button)
+    createButton(dom, sectionName, itemName, className, item.button)
   }
   if (item.textfield) {
-    createTextfield(dom, sectionName, itemName, item.textfield)
+    createTextfield(dom, sectionName, itemName, className, item.textfield)
   }
   if (item.textarea) {
-    createTextarea(dom, sectionName, itemName, item.textarea)
+    createTextarea(dom, sectionName, itemName, className, item.textarea)
   }
   if (item.slider) {
-    createSlider(dom, sectionName, itemName, item.slider)
+    createSlider(dom, sectionName, itemName, className, item.slider)
   }
   if (item.switch) {
-    createSwitch(dom, sectionName, itemName, item.switch)
+    createSwitch(dom, sectionName, itemName, className, item.switch)
   }
   if (item.space) {
     createSpace(dom, sectionName, itemName)
@@ -236,13 +241,16 @@ function iterateItem(
 
 function iterateComponents(
   dom: JSDOM,
-  components: Components,
+  components: any,
   parentName: string,
   id: string
 ) {
   let componentsDiv = dom.window.document.createElement('div')
   componentsDiv.id = id
   dom.window.document.getElementById(parentName)?.appendChild(componentsDiv)
+  if (components.class) {
+    componentsDiv.className = components.class
+  }
   for (const componentItem in components) {
     const component = components[componentItem]
     iterateItem(dom, id, componentItem, component)
@@ -253,6 +261,9 @@ function iterateFooter(dom: JSDOM, footer: any) {
   let footerElem = dom.window.document.createElement('footer')
   footerElem.id = 'footer'
   dom.window.document.getElementsByTagName('body')[0].appendChild(footerElem)
+  if (footer.class) {
+    footerElem.className = footer.class
+  }
 
   if (footer['footer-tabs']) {
     iterateFooterTabs(dom, footer['footer-tabs'])
@@ -287,10 +298,10 @@ function createFooterTabsItem(
     // if (footerTabsItem.badge) {
     //   tabsItemData = { ...tabsItemData, badge: footerTabsItem.badge }
     // }
+    let className = footerTabsItem[footerItemComp].class
+      ? footerTabsItem[footerItemComp].class
+      : ''
     if (footerTabsItem[footerItemComp].image) {
-      let className = footerTabsItem[footerItemComp].class
-        ? footerTabsItem[footerItemComp].class
-        : ''
       createImage(
         dom,
         id,
@@ -300,7 +311,13 @@ function createFooterTabsItem(
       )
     }
     if (footerTabsItem[footerItemComp].text) {
-      createLabel(dom, id, footerItemComp, footerTabsItem[footerItemComp].text)
+      createLabel(
+        dom,
+        id,
+        footerItemComp,
+        className,
+        footerTabsItem[footerItemComp].text
+      )
     }
     if (footerItemComp === 'url') {
       appFooterItem.href = footerTabsItem.url
@@ -311,16 +328,34 @@ function createFooterTabsItem(
   }
 }
 
-function createLabel(dom: JSDOM, parentName: string, id: string, label: any) {
+function createLabel(
+  dom: JSDOM,
+  parentName: string,
+  id: string,
+  className: string,
+  label: any
+) {
   let appLabel = dom.window.document.createElement('p')
   appLabel.id = id
+  if (className) {
+    appLabel.className = className
+  }
   appLabel.innerHTML = label
   dom.window.document.getElementById(parentName)?.appendChild(appLabel)
 }
 
-function createLink(dom: JSDOM, parentName: string, id: string, link: any) {
+function createLink(
+  dom: JSDOM,
+  parentName: string,
+  id: string,
+  className: string,
+  link: any
+) {
   let appLink = dom.window.document.createElement('a')
   appLink.id = id
+  if (className) {
+    appLink.className = className
+  }
   appLink.href = link.url
   appLink.setAttribute('alt', link.alt)
   appLink.innerHTML = link.text
@@ -343,9 +378,18 @@ function createImage(
   dom.window.document.getElementById(parentName)?.appendChild(appImage)
 }
 
-function createButton(dom: JSDOM, parentName: string, id: string, button: any) {
+function createButton(
+  dom: JSDOM,
+  parentName: string,
+  id: string,
+  className: string,
+  button: any
+) {
   let appButton = dom.window.document.createElement('button')
   appButton.id = id
+  if (className) {
+    appButton.className = className
+  }
   appButton.innerHTML = button.text
   dom.window.document.getElementById(parentName)?.appendChild(appButton)
 }
@@ -354,10 +398,14 @@ function createTextfield(
   dom: JSDOM,
   parentName: string,
   id: string,
+  className: string,
   textfield: any
 ) {
   let appTextfield = dom.window.document.createElement('input')
   appTextfield.id = id
+  if (className) {
+    appTextfield.className = className
+  }
   if (textfield.value) {
     appTextfield.setAttribute('value', textfield.value)
   }
@@ -378,10 +426,14 @@ function createTextarea(
   dom: JSDOM,
   parentName: string,
   id: string,
+  className: string,
   textarea: any
 ) {
   let appTextarea = dom.window.document.createElement('textarea')
   appTextarea.id = id
+  if (className) {
+    appTextarea.className = className
+  }
   if (textarea.value) {
     appTextarea.setAttribute('value', textarea.value)
   }
@@ -398,10 +450,19 @@ function createTextarea(
   dom.window.document.getElementById(parentName)?.appendChild(appTextarea)
 }
 
-function createSlider(dom: JSDOM, parentName: string, id: string, slider: any) {
+function createSlider(
+  dom: JSDOM,
+  parentName: string,
+  id: string,
+  className: string,
+  slider: any
+) {
   let appSlider = dom.window.document.createElement('input')
   appSlider.setAttribute('type', 'range')
   appSlider.id = id
+  if (className) {
+    appSlider.className = className
+  }
   if (slider.value) {
     appSlider.setAttribute('value', slider.value)
   } else {
@@ -415,11 +476,15 @@ function createSwitch(
   dom: JSDOM,
   parentName: string,
   id: string,
+  className: string,
   switchItem: any
 ) {
   let appSwitch = dom.window.document.createElement('input')
   appSwitch.setAttribute('type', 'checkbox')
   appSwitch.id = id
+  if (className) {
+    appSwitch.className = className
+  }
   if (switchItem.value === 'true') {
     appSwitch.toggleAttribute('checked')
   }
