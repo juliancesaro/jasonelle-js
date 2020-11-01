@@ -17,8 +17,24 @@ if (v.validate(data.$jason, schema).errors.length > 0) {
 } else {
   // Valid JSON.
   /**
-   * First way of creating application: through creating dom and writing
-   * to html (static)
+   * First way of creating application: through adding to JSDOM and
+   * writing the serialized JSDOM to html file (static)
+   */
+  // let IR = iterateJason(data.$jason)
+
+  // optimiseStyle(IR)
+
+  // let dom = iterateIR(IR)
+
+  // let style = compileStyle(IR)
+
+  // fs.writeFileSync('src/generated/IR.json', JSON.stringify(IR))
+  // fs.writeFileSync('src/generated/index.html', dom.serialize())
+  // fs.writeFileSync('src/generated/styles.css', style)
+
+  /**
+   * Second way of creating application: through creating js file which
+   * adds to the html file DOM at run time (dynamic)
    */
 
   let IR = iterateJason(data.$jason)
@@ -35,28 +51,4 @@ if (v.validate(data.$jason, schema).errors.length > 0) {
   fs.writeFileSync('src/generated/index.html', dom.serialize())
   fs.writeFileSync('src/generated/script.js', js)
   fs.writeFileSync('src/generated/styles.css', style)
-
-  /**
-   * Second way of creating application: through creating js file and writing
-   * to html (static)
-   */
-
-  // let IR = iterateJason(data.$jason)
-
-  // let optimisedIR = optimiseStyle(IR)
-
-  // let dom = createHTML()
-
-  // let js = render(IR)
-
-  // let style = compileStyle(IR)
-
-  // fs.writeFileSync('src/generated/IR.json', JSON.stringify(IR))
-  // fs.writeFileSync(
-  //   'src/generated/optimisedIR.json',
-  //   JSON.stringify(optimisedIR)
-  // )
-  // fs.writeFileSync('src/generated/index.html', dom.serialize())
-  // fs.writeFileSync('src/generated/script.js', js)
-  // fs.writeFileSync('src/generated/styles.css', style)
 }

@@ -1,8 +1,43 @@
-function renderStyle(head: any) {
-  let element = document.createElement('link')
-  element.setAttribute('rel', 'stylesheet')
-  element.setAttribute('href', 'styles.css')
-  head.appendChild(element)
+export function renderApplication(dom: any, application: any) {
+  renderStyle(dom)
+  renderMetadata(dom, application.metadata)
+  renderContent(dom, application.content)
+}
+
+function renderStyle(dom: any) {
+  let styleLink = dom.window.document.createElement('link')
+  styleLink.rel = 'stylesheet'
+  styleLink.href = 'styles.css'
+  dom.window.document.getElementsByTagName('head')[0].appendChild(styleLink)
+}
+
+function renderMetadata(dom: any, metadata: any) {
+  for (const component in metadata) {
+    switch (component) {
+      case 'title':
+        renderTitle(dom, metadata.title)
+        break
+    }
+  }
+}
+
+function renderContent(dom: any, content: any) {
+  for (const bodyComponent in content) {
+    switch (bodyComponent) {
+      case 'header': {
+        renderHeader(dom, content.header)
+        break
+      }
+      case 'sections': {
+        renderSections(dom, content.sections)
+        break
+      }
+      case 'footer': {
+        renderFooter(dom, content.footer)
+        break
+      }
+    }
+  }
 }
 
 function renderTitle(dom: any, title: any) {
@@ -18,6 +53,14 @@ function renderHeader(dom: any, header: any) {
     headerElem.className = header.class
   }
   dom.window.document.getElementsByTagName('body')[0].appendChild(headerElem)
+  switch (typeof header['header-title']) {
+    case 'string':
+      renderHeaderTitle(dom, header['header-title'])
+      break
+    case 'object':
+      renderAdvancedTitle(dom, header['header-title'])
+      break
+  }
 }
 
 function renderHeaderTitle(dom: any, title: any) {
@@ -40,22 +83,91 @@ function renderAdvancedTitle(dom: any, title: any) {
   }
 }
 
-function renderSections(dom: any) {
+function renderSections(dom: any, sections: any) {
   let sectionsElem = dom.window.document.createElement('div')
   sectionsElem.id = 'sections'
   dom.window.document.getElementsByTagName('body')[0].appendChild(sectionsElem)
+  for (const sectionsItem in sections) {
+    let sectionName = sectionsItem
+    let section = sections[sectionsItem]
+    renderSection(dom, sectionName, section)
+  }
 }
 
-function renderSection(dom: any, sectionName: string) {
+function renderSection(dom: any, sectionName: string, section: any) {
   let sectionElem = dom.window.document.createElement('div')
   sectionElem.id = sectionName
   dom.window.document.getElementById('sections').appendChild(sectionElem)
+  if (section[`${sectionName}-items`]) {
+    renderItems(dom, sectionName, section[`${sectionName}-items`])
+  }
 }
 
-function renderItems(dom: any, sectionName: any) {
+function renderItems(dom: any, sectionName: any, items: any) {
   let itemsElem = dom.window.document.createElement('div')
   itemsElem.id = `${sectionName}-items`
   dom.window.document.getElementById(sectionName).appendChild(itemsElem)
+  for (const itemsItem in items) {
+    let itemName = itemsItem
+    let item = items[itemsItem]
+    renderItem(dom, `${sectionName}-items`, itemName, item)
+  }
+}
+
+function renderItem(
+  dom: any,
+  sectionName: string,
+  itemName: string,
+  item: any
+) {
+  let className = ''
+  if (item.class) {
+    className = item.class
+  }
+  if (item.label) {
+    renderLabel(dom, sectionName, itemName, className, item.label)
+  }
+  // item is sometimes a string which has a link function
+  if (item.link && typeof item.link === 'object') {
+    renderLink(dom, sectionName, itemName, className, item.link)
+  }
+  if (item.image) {
+    renderImage(dom, sectionName, itemName, className, item.image)
+  }
+  if (item.button) {
+    renderButton(dom, sectionName, itemName, className, item.button)
+  }
+  if (item.textfield) {
+    renderTextfield(dom, sectionName, itemName, className, item.textfield)
+  }
+  if (item.textarea) {
+    renderTextarea(dom, sectionName, itemName, className, item.textarea)
+  }
+  if (item.slider) {
+    renderSlider(dom, sectionName, itemName, className, item.slider)
+  }
+  if (item.switch) {
+    renderSwitch(dom, sectionName, itemName, className, item.switch)
+  }
+  if (item.space) {
+    renderSpace(dom, sectionName, itemName)
+  }
+  if (item[`${itemName}-horizontal-components`]) {
+    renderComponents(
+      dom,
+      item[`${itemName}-horizontal-components`],
+      sectionName,
+      `${itemName}-horizontal-components`
+    )
+  }
+  if (item[`${itemName}-vertical-components`]) {
+    renderComponents(
+      dom,
+      item[`${itemName}-vertical-components`],
+      sectionName,
+      `${itemName}-vertical-components`
+    )
+  }
 }
 
 function renderComponents(dom: any, components: any, parentName: any, id: any) {
@@ -65,6 +177,10 @@ function renderComponents(dom: any, components: any, parentName: any, id: any) {
     componentsElem.className = components.class
   }
   dom.window.document.getElementById(parentName).appendChild(componentsElem)
+  for (const componentItem in components) {
+    const component = components[componentItem]
+    renderItem(dom, id, componentItem, component)
+  }
 }
 
 function renderLabel(
@@ -245,7 +361,17 @@ function renderFooter(dom: any, footer: any) {
     footerElem.className = footer.class
   }
   dom.window.document.getElementsByTagName('body')[0].appendChild(footerElem)
+  if (footer['footer-tabs']) {
+    renderFooterTabs(dom, footer['footer-tabs'])
+  }
 }
+
+function renderFooterTabs(dom: any, footerTabs: any) {
+  for (const tab in footerTabs) {
+    renderFooterTabsItem(dom, 'footer', tab, footerTabs[tab])
+  }
+}
+
 function renderFooterTabsItem(
   dom: any,
   parentName: string,
@@ -287,27 +413,4 @@ function renderFooterTabsItem(
       footerItemElem.href = footerTabsItem.href
     }
   }
-}
-
-export {
-  renderStyle,
-  renderTitle,
-  renderHeader,
-  renderHeaderTitle,
-  renderAdvancedTitle,
-  renderSections,
-  renderSection,
-  renderItems,
-  renderComponents,
-  renderLabel,
-  renderLink,
-  renderImage,
-  renderButton,
-  renderTextfield,
-  renderTextarea,
-  renderSlider,
-  renderSwitch,
-  renderSpace,
-  renderFooter,
-  renderFooterTabsItem,
 }
