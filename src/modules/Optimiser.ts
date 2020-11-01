@@ -11,9 +11,6 @@ export function optimiseStyle(data: any) {
   if (data.style) {
     let styleMap = new Map<string, Array<string>>()
 
-    // So classes object is not null
-    data.style.classes = {}
-
     // Add each style property as a key and the object id as value
     for (const styleObj in data.style) {
       Object.entries(data.style[styleObj]).forEach(([attr, val]) => {
@@ -25,8 +22,6 @@ export function optimiseStyle(data: any) {
         }
       })
     }
-
-    console.log(styleMap)
 
     // If style property has more than two id's, create a class for this style
     // Delete the style from the id's original style
@@ -43,15 +38,6 @@ export function optimiseStyle(data: any) {
           }
           if (isEmpty(data.style[id])) {
             delete data.style[id]
-          }
-          if (data.style['classes'][id]) {
-            let newClassName = data.style['classes'][id] + ' ' + className
-            data.style['classes'][id] = newClassName
-          } else {
-            data.style['classes'] = {
-              ...data.style['classes'],
-              [id]: className,
-            }
           }
           let component = findComponent(data, id)
           if (component) {

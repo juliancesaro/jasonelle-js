@@ -13,39 +13,37 @@ import { AdvancedTitle } from './components/header/AdvancedTitle'
 export function compileStyle(data: any) {
   let styleString = ''
   for (const styleObj in data.style) {
-    if (styleObj !== 'classes') {
-      if (styleObj.includes('class-')) {
-        if (data.style[styleObj].hasOwnProperty('placeholder_color')) {
-          const styles = `color:${data.style[styleObj].placeholder_color}`
-          styleString += `.${styleObj.replace(
-            'class-',
-            ''
-          )}::placeholder{${styles}}`
-          delete data.style[styleObj].placeholder_color
-        }
-        if (data.style[styleObj].hasOwnProperty('size')) {
-          data.style[styleObj]['font-size'] = data.style[styleObj]['size']
-          delete data.style[styleObj]['size']
-        }
-        const styles = Object.entries(data.style[styleObj])
-          .map(([k, v]) => `${correctStyles(k)}:${correctStyles(String(v))}`)
-          .join(';')
-        styleString += `.${styleObj.replace('class-', '')}{${styles}}`
-      } else {
-        if (data.style[styleObj].hasOwnProperty('placeholder_color')) {
-          const styles = `color:${data.style[styleObj].placeholder_color}`
-          styleString += `#${styleObj}::placeholder{${styles}}`
-          delete data.style[styleObj].placeholder_color
-        }
-        if (data.style[styleObj].hasOwnProperty('size')) {
-          data.style[styleObj]['font-size'] = data.style[styleObj]['size']
-          delete data.style[styleObj]['size']
-        }
-        const styles = Object.entries(data.style[styleObj])
-          .map(([k, v]) => `${correctStyles(k)}:${correctStyles(String(v))}`)
-          .join(';')
-        styleString += `#${styleObj}{${styles}}`
+    if (styleObj.includes('class-')) {
+      if (data.style[styleObj].hasOwnProperty('placeholder_color')) {
+        const styles = `color:${data.style[styleObj].placeholder_color}`
+        styleString += `.${styleObj.replace(
+          'class-',
+          ''
+        )}::placeholder{${styles}}`
+        delete data.style[styleObj].placeholder_color
       }
+      if (data.style[styleObj].hasOwnProperty('size')) {
+        data.style[styleObj]['font-size'] = data.style[styleObj]['size']
+        delete data.style[styleObj]['size']
+      }
+      const styles = Object.entries(data.style[styleObj])
+        .map(([k, v]) => `${correctStyles(k)}:${correctStyles(String(v))}`)
+        .join(';')
+      styleString += `.${styleObj.replace('class-', '')}{${styles}}`
+    } else {
+      if (data.style[styleObj].hasOwnProperty('placeholder_color')) {
+        const styles = `color:${data.style[styleObj].placeholder_color}`
+        styleString += `#${styleObj}::placeholder{${styles}}`
+        delete data.style[styleObj].placeholder_color
+      }
+      if (data.style[styleObj].hasOwnProperty('size')) {
+        data.style[styleObj]['font-size'] = data.style[styleObj]['size']
+        delete data.style[styleObj]['size']
+      }
+      const styles = Object.entries(data.style[styleObj])
+        .map(([k, v]) => `${correctStyles(k)}:${correctStyles(String(v))}`)
+        .join(';')
+      styleString += `#${styleObj}{${styles}}`
     }
   }
   return styleString
@@ -193,11 +191,15 @@ function iterateItem(
   itemName: string,
   item: any
 ) {
-  let className = item.class ? item.class : ''
+  let className = ''
+  if (item.class) {
+    className = item.class
+  }
   if (item.label) {
     createLabel(dom, sectionName, itemName, className, item.label)
   }
-  if (item.link) {
+  // item is sometimes a string which has a link function
+  if (item.link && typeof item.link === 'object') {
     createLink(dom, sectionName, itemName, className, item.link)
   }
   if (item.image) {
