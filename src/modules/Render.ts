@@ -1,3 +1,10 @@
+function renderStyle(head: any) {
+  let element = document.createElement('link')
+  element.setAttribute('rel', 'stylesheet')
+  element.setAttribute('href', 'styles.css')
+  head.appendChild(element)
+}
+
 function renderTitle(dom: any, title: any) {
   let titleElem = dom.window.document.createElement('title')
   titleElem.innerHTML = title.toString()
@@ -21,7 +28,11 @@ function renderHeaderTitle(dom: any, title: any) {
 
 function renderAdvancedTitle(dom: any, title: any) {
   if (title.url) {
-    renderImage(dom, 'header', 'header-title', '', title)
+    let className = ''
+    if (title.class) {
+      className = title.class
+    }
+    renderImage(dom, 'header', 'header-title', className, title)
   } else {
     let titleElem = dom.window.document.createElement('p')
     titleElem.innerHTML = title.toString()
@@ -237,9 +248,9 @@ function renderFooter(dom: any, footer: any) {
 }
 function renderFooterTabsItem(
   dom: any,
-  footerTabsItem: any,
   parentName: string,
-  id: string
+  id: string,
+  footerTabsItem: any
 ) {
   let footerItemElem = dom.window.document.createElement('a')
   footerItemElem.id = id
@@ -279,6 +290,7 @@ function renderFooterTabsItem(
 }
 
 export {
+  renderStyle,
   renderTitle,
   renderHeader,
   renderHeaderTitle,

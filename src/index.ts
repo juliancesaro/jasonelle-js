@@ -25,12 +25,15 @@ if (v.validate(data.$jason, schema).errors.length > 0) {
 
   optimiseStyle(IR)
 
-  let dom = iterateIR(IR)
+  let dom = createHTML()
+
+  let js = render(IR)
 
   let style = compileStyle(IR)
 
   fs.writeFileSync('src/generated/IR.json', JSON.stringify(IR))
   fs.writeFileSync('src/generated/index.html', dom.serialize())
+  fs.writeFileSync('src/generated/script.js', js)
   fs.writeFileSync('src/generated/styles.css', style)
 
   /**
