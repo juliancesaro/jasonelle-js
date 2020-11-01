@@ -1,16 +1,20 @@
 import isEmpty from 'lodash/isEmpty'
 
+/**
+ * For extracting single styles that are similar and creating classes
+ * eg. Two components with the same margin and padding join two classes
+ * which add that margin and padding.
+ * Returns an optimised IR
+ * @param data The IR object
+ */
 export function optimiseStyle(data: any) {
-  /**
-   * For extracting single styles that are similar and creating classes
-   * eg. Two components with the same margin and padding join two classes
-   * which add that margin and padding
-   */
   if (data.style) {
     let styleMap = new Map<string, Array<string>>()
 
+    // So classes object is not null
     data.style.classes = {}
 
+    // Add each style property as a key and the object id as value
     for (const styleObj in data.style) {
       Object.entries(data.style[styleObj]).forEach(([attr, val]) => {
         let newArr = styleMap.get(`${attr}:${val}`)
@@ -22,11 +26,16 @@ export function optimiseStyle(data: any) {
       })
     }
 
+    console.log(styleMap)
+
+    // If style property has more than two id's, create a class for this style
+    // Delete the style from the id's original style
+    // Add object id and class name to classes object
     styleMap.forEach((value: Array<string>, key: string) => {
       if (value.length < 2) {
         styleMap.delete(key)
       } else {
-        let className = createClassName(key)
+        let className = nextClassName()
         value.forEach((id) => {
           let property = key.split(':')[0]
           if (data.style[id][property]) {
@@ -57,71 +66,16 @@ export function optimiseStyle(data: any) {
         data.style[`class-${className}`] = { [style[0]]: [style[1]] }
       }
     })
-
-    /**
-     * For extracting entire blocks of style that are similar and creating classes
-     */
-    //   let styleMap = new Map<string, Array<string>>()
-
-    //   for (const styleObj in data.style) {
-    //     let arr = styleMap.get(JSON.stringify(data.style[styleObj]))
-    //     if (!arr) {
-    //       styleMap.set(JSON.stringify(data.style[styleObj]), [styleObj])
-    //     } else {
-    //       arr.push(styleObj)
-    //     }
-    //   }
-
-    //   let i = 0
-    //   styleMap.forEach((value: Array<string>, key: string) => {
-    //     if (value.length < 2) {
-    //       styleMap.delete(key)
-    //     } else {
-    //       value.forEach((id) => {
-    //         delete data.style[id]
-    //         data.style['classes'] = { ...data.style['classes'], [id]: `class-${i}` }
-    //       })
-    //       let style = JSON.parse(key)
-    //       data.style[`class-${i}`] = style
-    //       i++
-    //     }
-    //   })
-
-    //   let styleMap = new Map<string, Array<string>>()
-
-    //   // Map each block of style to it's id
-    //   for (const styleObj in data.style) {
-    //     let arr = styleMap.get(JSON.stringify(data.style[styleObj]))
-    //     if (!arr) {
-    //       styleMap.set(JSON.stringify(data.style[styleObj]), [styleObj])
-    //     } else {
-    //       arr.push(styleObj)
-    //     }
-    //   }
-
-    // To delete old id style and create the new classes
-    // Also adds class property to each component of a class
-    //   let i = 0
-    //   styleMap.forEach((value: Array<string>, key: string) => {
-    //     if (value.length < 2) {
-    //       styleMap.delete(key)
-    //     } else {
-    //       value.forEach((id) => {
-    //         delete data.style[id]
-    //         data.style['classes'] = { ...data.style['classes'], [id]: `class-${i}` }
-    //         if (findComponent(data, id)) {
-    //           findComponent(data, id).class = `class-${i}`
-    //         }
-    //       })
-    //       let style = key
-    //       data.style[`class-${i}`] = style
-    //       i++
-    //     }
-    //   })
   }
   return data
 }
 
+/**
+ * Recursive function that finds the object with name id and returns it.
+ * Returns object with name id
+ * @param data The current object
+ * @param id The target object name
+ */
 function findComponent(data: any, id: string): any | null {
   let result = null
   for (const component in data) {
@@ -138,9 +92,14 @@ function findComponent(data: any, id: string): any | null {
   return result
 }
 
-function createClassName(style: string) {
-  let className = ''
-  let str = style.split(':')
-  className += str[0] + str[1]
-  return className
-}
+/**
+ * Closure used to create a class name for a specific style property.
+ * Just returns a number for now but can be customised.
+ */
+var nextClassName = (function createClassName() {
+  let counter = 0
+  return function () {
+    counter += 1
+    return `c${counter}`
+  }
+})()
