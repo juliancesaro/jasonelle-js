@@ -1,19 +1,17 @@
-import { Jason } from './components/Jason'
-import { Head } from './components/Head'
-import { Title } from './components/Title'
-import { Body } from './components/Body'
-import { Header } from './components/header/Header'
-import { AdvancedTitle } from './components/header/AdvancedTitle'
-import { Sections } from './components/Sections'
-import { Section } from './components/Section'
-import { Items } from './components/Items'
-import { Item } from './components/Item'
-import { Components } from './components/Components'
-import { Footer } from './components/footer/Footer'
-import { Style } from './components/Style'
-import { FooterTabs } from './components/footer/footertabs/FooterTabs'
-import { FooterTabsItem } from './components/footer/footertabs/FooterTabsItem'
-import { create } from 'domain'
+import { Jason } from '../components/Jason'
+import { Head } from '../components/Head'
+import { Title } from '../components/Title'
+import { Body } from '../components/Body'
+import { Header } from '../components/header/Header'
+import { AdvancedTitle } from '../components/header/AdvancedTitle'
+import { Sections } from '../components/Sections'
+import { Section } from '../components/Section'
+import { Items } from '../components/Items'
+import { Item } from '../components/Item'
+import { Components } from '../components/Components'
+import { Footer } from '../components/footer/Footer'
+import { FooterTabs } from '../components/footer/footertabs/FooterTabs'
+import { FooterTabsItem } from '../components/footer/footertabs/FooterTabsItem'
 
 /**
  * 'Iterate' functions:
@@ -89,7 +87,7 @@ function iterateHeader(application: any, header: Header) {
   application.content = { ...application.content, header: {} }
   switch (typeof header.title) {
     case 'string':
-      application.content.header = createTitle(
+      application.content.header = createHeaderTitle(
         application.content.header,
         header.title
       )
@@ -118,6 +116,17 @@ function iterateHeader(application: any, header: Header) {
     }
   }
   return application
+}
+
+function createHeaderTitle(parent: any, title: string) {
+  if (title) {
+    let titleData = { ['header-title']: title }
+    parent = {
+      ...parent,
+      ...titleData,
+    }
+  }
+  return parent
 }
 
 function createAdvancedTitle(parent: any, title: AdvancedTitle) {

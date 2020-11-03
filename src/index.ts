@@ -1,8 +1,11 @@
 import * as schema from './json/schema.json'
-import { iterateJason } from './modules/Translator'
-import { iterateIR, compileStyle } from './modules/Generator'
-import { iterateIR as render, createHTML } from './modules/RenderGenerator'
-import { optimiseStyle } from './modules/Optimiser'
+import { iterateJason } from './modules/translator/Translator'
+import { iterateIR, compileStyle } from './modules/generator/static/Generator'
+import {
+  iterateIR as render,
+  createHTML,
+} from './modules/generator/dynamic/RenderGenerator'
+import { optimiseStyle } from './modules/optimiser/Optimiser'
 import * as fs from 'fs'
 
 var Validator = require('jsonschema').Validator
