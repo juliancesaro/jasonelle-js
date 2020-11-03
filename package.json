@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "compile": "tsc src/index.ts --resolveJsonModule --esModuleInterop && npm start",
+    "start": "node src/index.js --",
+    "compile": "tsc && npm start --",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
