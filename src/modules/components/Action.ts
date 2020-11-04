@@ -1,5 +1,6 @@
 export interface Action {
   type?: string
   trigger?: string
-  options?: object
+  options?: { [key: string]: string }
+  success?: { type: string }
 }

@@ -62,9 +62,10 @@ export function iterateIR(data: any) {
   script += 'renderStyle(head);'
 
   script += iterateMetadata(data.metadata)
+  script += iterateScript(data.scripts)
   script += iterateContent(data.content)
 
-  return script
+  return script + 'renderApp()'
 }
 
 function iterateMetadata(metadata: any) {
@@ -77,6 +78,18 @@ function iterateMetadata(metadata: any) {
     }
   }
   return metadataScript
+}
+
+function iterateScript(script: any) {
+  let scriptString = ''
+  for (const action in script) {
+    switch (action) {
+      case 'load':
+        scriptString += `let textfield = 'New Title';`
+        break
+    }
+  }
+  return scriptString
 }
 
 function iterateContent(content: any) {
@@ -97,7 +110,7 @@ function iterateContent(content: any) {
       }
     }
   }
-  return contentScript
+  return `function renderApp () { ${contentScript} }`
 }
 
 function iterateHeader(header: any) {
@@ -106,7 +119,11 @@ function iterateHeader(header: any) {
 
   switch (typeof header['header-title']) {
     case 'string':
-      headerScript += `renderHeaderTitle(this, '${header['header-title']}');`
+      if (header['header-title'].includes('{{$get.')) {
+        headerScript += `renderHeaderTitle(this, textfield);`
+      } else {
+        headerScript += `renderHeaderTitle(this, '${header['header-title']}');`
+      }
       break
     case 'object':
       headerScript += `renderAdvancedTitle(this, ${JSON.stringify(
@@ -173,12 +190,27 @@ function iterateItem(sectionName: string, itemName: string, item: any) {
   if (item.button) {
     itemScript += `renderButton(this, '${sectionName}', '${itemName}', '${className}', ${JSON.stringify(
       item.button
-    )});`
+    )}, () => {
+      var node = document.getElementsByTagName('body')[0]
+      node.innerHTML = ''
+      let renderScriptLink = this.window.document.createElement('script')
+      renderScriptLink.src = '../modules/generator/dynamic/Render.js'
+      this.window.document
+        .getElementsByTagName('body')[0]
+        .appendChild(renderScriptLink)
+
+      let scriptLink = this.window.document.createElement('script')
+      scriptLink.src = 'script.js'
+      this.window.document
+        .getElementsByTagName('body')[0]
+        .appendChild(scriptLink)
+      renderApp()
+    });`
   }
   if (item.textfield) {
     itemScript += `renderTextfield(this, '${sectionName}', '${itemName}', '${className}', ${JSON.stringify(
       item.textfield
-    )});`
+    )}, '${item.textfield.name} = this.value;');`
   }
   if (item.textarea) {
     itemScript += `renderTextarea(this, '${sectionName}', '${itemName}', '${className}', ${JSON.stringify(

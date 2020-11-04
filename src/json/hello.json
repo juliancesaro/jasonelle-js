@@ -1,14 +1,25 @@
 {
   "$jason": {
     "head": {
-      "title": "Hello world!"
+      "title": "Hello world!",
+      "actions": {
+        "$load": {
+          "type": "$set",
+          "options": {
+            "textfield": "New title"
+          },
+          "success": {
+            "type": "$render"
+          }
+        }
+      }
     },
     "body": {
       "header": {
         "style": {
           "background": "lightblue"
         },
-        "title": "{{$get.firstname}} {{$get.lastname}}"
+        "title": "{{$get.title}}"
       },
       "sections": [
         {
@@ -22,7 +33,7 @@
               "components": [
                 {
                   "type": "textfield",
-                  "name": "title",
+                  "name": "textfield",
                   "placeholder": "Status update",
                   "style": {
                     "placeholder_color": "#cecece",
@@ -47,7 +58,7 @@
                   "action": {
                     "type": "$set",
                     "options": {
-                      "title": "Hello World"
+                      "title": "{{$get.textfield}}"
                     }
                   }
                 }

@@ -12,6 +12,9 @@ import { Components } from '../components/Components'
 import { Footer } from '../components/footer/Footer'
 import { FooterTabs } from '../components/footer/footertabs/FooterTabs'
 import { FooterTabsItem } from '../components/footer/footertabs/FooterTabsItem'
+import { Actions } from '../components/Actions'
+import { Action } from '../components/Action'
+import { create } from 'lodash'
 
 /**
  * 'Iterate' functions:
@@ -43,6 +46,9 @@ function iterateHead(application: any, head: Head) {
       case 'title':
         application.metadata = createTitle(application.metadata, head.title)
         break
+      case 'actions':
+        application = iterateActions(application, head.actions)
+        break
     }
   }
   return application
@@ -56,6 +62,40 @@ function createTitle(parent: any, title: Title) {
       ...titleData,
     }
   }
+  return parent
+}
+
+function iterateActions(application: any, actions: Actions) {
+  application = { ...application, scripts: {} }
+  for (const action in actions) {
+    switch (action) {
+      case '$load':
+        application.scripts = {
+          load: createAction(application.scripts, actions[action]),
+        }
+    }
+  }
+  return application
+}
+
+function createAction(parent: any, action: Action) {
+  let actionData = {
+    type: action.type,
+  }
+  if (action.options) {
+    for (const variable in action.options) {
+      actionData = { ...actionData, [variable]: action.options[variable] }
+    }
+  }
+  if (action.success) {
+    let success = { success: action.success.type }
+    actionData = { ...actionData, ...success }
+  }
+  parent = {
+    ...parent,
+    ...actionData,
+  }
+
   return parent
 }
 
@@ -579,6 +619,13 @@ function createButton(parent: any, button: Item) {
       button: { url: button.url },
     }
   }
+  if (button.action) {
+    let action = createAction({}, button.action)
+    buttonData = {
+      ...buttonData,
+      action,
+    }
+  }
   parent = { ...parent, ...buttonData }
 
   return parent
@@ -595,6 +642,12 @@ function createTextfield(parent: any, textfield: Item) {
     textfieldData.textfield = {
       ...textfieldData.textfield,
       value: textfield.value,
+    }
+  }
+  if (textfield.name) {
+    textfieldData.textfield = {
+      ...textfieldData.textfield,
+      name: textfield.name,
     }
   }
   if (textfield.placeholder) {

@@ -122,14 +122,15 @@ function renderButton(
   parentName: string,
   id: string,
   className: string,
-  button: any
+  button: any,
+  callback: any
 ) {
-  console.log(JSON.stringify(button))
   let buttonElem = dom.window.document.createElement('button')
   buttonElem.id = id
   if (className) {
     buttonElem.className = className
   }
+  buttonElem.addEventListener('click', callback)
   buttonElem.innerHTML = button.text
   dom.window.document.getElementById(parentName).appendChild(buttonElem)
 }
@@ -139,7 +140,8 @@ function renderTextfield(
   parentName: string,
   id: string,
   className: string,
-  textfield: any
+  textfield: any,
+  updateFunc: string
 ) {
   let textfieldElem = dom.window.document.createElement('input')
   textfieldElem.id = id
@@ -158,6 +160,7 @@ function renderTextfield(
   if (textfield.focus) {
     textfieldElem.toggleAttribute('autofocus')
   }
+  textfieldElem.setAttribute('onchange', `${updateFunc}(this.value)`)
 
   dom.window.document.getElementById(parentName).appendChild(textfieldElem)
 }
