@@ -55,12 +55,10 @@ function iterateHead(application: any, head: Head) {
 }
 
 function createTitle(parent: any, title: Title) {
-  if (title) {
-    let titleData = { title: title }
-    parent = {
-      ...parent,
-      ...titleData,
-    }
+  let titleData = { title: title }
+  parent = {
+    ...parent,
+    ...titleData,
   }
   return parent
 }
@@ -376,17 +374,17 @@ function iterateItem(
   if (item.style) {
     // Check if the items are components, so the styles are added to the components list,
     // not the parent item which is discarded in generation
-    if (application.style[`${sectionName}-items-${itemName}`]) {
-      application.style[`${sectionName}-items-${itemName}`] = {
-        ...application.style[`${sectionName}-items-${itemName}`],
-        ...item.style,
-      }
-    } else {
-      application.style = {
-        ...application.style,
-        [`${sectionName}-items-${itemName}`]: item.style,
-      }
+    // if (application.style[`${sectionName}-items-${itemName}`]) {
+    //   application.style[`${sectionName}-items-${itemName}`] = {
+    //     ...application.style[`${sectionName}-items-${itemName}`],
+    //     ...item.style,
+    //   }
+    // } else {
+    application.style = {
+      ...application.style,
+      [`${sectionName}-items-${itemName}`]: item.style,
     }
+    // }
   }
   return application
 }

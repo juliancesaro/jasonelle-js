@@ -56,7 +56,7 @@ function staticCompile(data: any) {
 function dynamicCompile(data: any) {
   let IR = iterateJason(data.$jason)
 
-  optimiseStyle(IR)
+  //optimiseStyle(IR)
 
   let dom = createHTML()
 

@@ -1,0 +1,57 @@
+{
+  "$jason": {
+    "head": {
+      "title": "Hello world!",
+      "actions": {
+        "$load": {
+          "type": "$set",
+          "options": {
+            "textfield": "New title"
+          },
+          "success": {
+            "type": "$render"
+          }
+        }
+      }
+    },
+    "body": {
+      "header": {
+        "style": {
+          "background": "lightblue"
+        },
+        "title": "{{$get.title}}"
+      },
+      "sections": [
+        {
+          "items": [
+            {
+              "type": "textfield",
+              "name": "textfield",
+              "placeholder": "Status update",
+              "style": {
+                "placeholder_color": "#cecece",
+                "width": "200"
+              }
+            },
+            {
+              "type": "button",
+              "text": "Change Title!",
+              "style": {
+                "width": "60",
+                "height": "60",
+                "background": "#f000f0",
+                "color": "#ffffff"
+              },
+              "action": {
+                "type": "$set",
+                "options": {
+                  "title": "{{$get.textfield}}"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

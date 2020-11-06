@@ -71,78 +71,6 @@
               },
               "components": [
                 {
-                  "type": "label",
-                  "style": {
-                    "align": "right",
-                    "padding": "10",
-                    "color": "#000000",
-                    "font": "HelveticaNeue",
-                    "size": "20"
-                  },
-                  "text": "Check out Live DEMO",
-                  "href": {
-                    "url": "https://raw.githubusercontent.com/jasonelle/docs/develop/examples/jasonette/apps/jasonpedia/demo.json",
-                    "alt": "Jasonelle DEMO"
-                  }
-                },
-                {
-                  "type": "button",
-                  "text": "Tap Me!",
-                  "style": {
-                    "width": "50",
-                    "height": "50",
-                    "background": "#00ff00",
-                    "color": "#ffffff",
-                    "font": "HelveticaNeue",
-                    "size": "12",
-                    "corner_radius": "25"
-                  }
-                },
-                {
-                  "type": "image",
-                  "url": "http://i.imgur.com/KUJPgGV.png",
-                  "style": {
-                    "width": "50",
-                    "height": "50",
-                    "corner_radius": "25"
-                  }
-                },
-                {
-                  "type": "label",
-                  "text": "View documentation",
-                  "href": {
-                    "url": "https://jasonelle.com/docs",
-                    "alt": "Jasonelle documentation"
-                  }
-                },
-                {
-                  "type": "textfield",
-                  "name": "status",
-                  "placeholder": "Status update",
-                  "style": {
-                    "placeholder_color": "#cecece",
-                    "font": "HelveticaNeue",
-                    "align": "center",
-                    "width": "200",
-                    "size": "12"
-                  }
-                },
-                {
-                  "type": "textarea",
-                  "name": "status",
-                  "placeholder": "Status update",
-                  "value": "Eating lunch..",
-                  "style": {
-                    "background": "rgba(0,0,0,0)",
-                    "placeholder_color": "#cecece",
-                    "font": "HelveticaNeue",
-                    "align": "center",
-                    "width": "300",
-                    "height": "100",
-                    "size": "12"
-                  }
-                },
-                {
                   "type": "slider",
                   "name": "gauge"
                 },
@@ -160,44 +88,18 @@
         "tabs": {
           "items": [
             {
-              "image": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/images/home.png",
+              "image": "image.jpg",
               "text": "Home",
               "style": {
                 "height": "40"
-              },
-              "url": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/home.json"
+              }
             },
             {
-              "image": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/images/notifications.png",
-              "text": "Notifications",
+              "image": "image.jpg",
+              "text": "About",
               "style": {
                 "height": "40"
-              },
-              "url": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/notifications.json"
-            },
-            {
-              "image": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/images/moments.png",
-              "text": "Moments",
-              "style": {
-                "height": "40"
-              },
-              "url": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/moments.json"
-            },
-            {
-              "image": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/images/messages.png",
-              "text": "Messages",
-              "style": {
-                "height": "40"
-              },
-              "url": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/messages.json"
-            },
-            {
-              "image": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/images/me.png",
-              "text": "Me",
-              "style": {
-                "height": "40"
-              },
-              "url": "https://raw.githubusercontent.com/Jasonette/Twitter-UI-example/master/me.json"
+              }
             }
           ]
         }

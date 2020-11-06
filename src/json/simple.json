@@ -1,0 +1,39 @@
+{
+  "$jason": {
+    "head": {
+      "title": "Hello World"
+    },
+    "body": {
+      "sections": [
+        {
+          "items": [
+            {
+              "type": "label",
+              "text": "Hello world!",
+              "style": {
+                "align": "center",
+                "size": "50"
+              }
+            },
+            {
+              "type": "label",
+              "text": "Hi there, world!!",
+              "style": {
+                "align": "center",
+                "size": "50"
+              }
+            },
+            {
+              "type": "label",
+              "text": "Greetings, world!",
+              "style": {
+                "align": "center",
+                "size": "50"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

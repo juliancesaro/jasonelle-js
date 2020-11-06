@@ -1,0 +1,92 @@
+{
+  "$jason": {
+    "head": {
+      "title": "Hello world!",
+      "actions": {
+        "$load": {
+          "type": "$set",
+          "options": {
+            "textfield": "New title"
+          },
+          "success": {
+            "type": "$render"
+          }
+        }
+      }
+    },
+    "body": {
+      "header": {
+        "style": {
+          "background": "lightblue"
+        },
+        "title": "{{$get.title}}"
+      },
+      "sections": [
+        {
+          "items": [
+            {
+              "type": "label",
+              "text": "Hello world!",
+              "style": {
+                "padding": "10",
+                "color": "#000000"
+              }
+            },
+            {
+              "type": "image",
+              "url": "http://i.imgur.com/KUJPgGV.png",
+              "style": {
+                "width": "50",
+                "height": "50",
+                "corner_radius": "25"
+              }
+            },
+            {
+              "type": "button",
+              "text": "Tap Me!",
+              "style": {
+                "width": "50",
+                "height": "50",
+                "background": "#00ff00"
+              }
+            },
+            {
+              "type": "textfield",
+              "name": "foo",
+              "placeholder": "Hello world!",
+              "style": {
+                "placeholder_color": "#cecece",
+                "width": "200"
+              }
+            },
+            {
+              "type": "textarea",
+              "name": "foo",
+              "placeholder": "Hello world!",
+              "style": {
+                "placeholder_color": "#cecece",
+                "width": "200"
+              }
+            },
+            {
+              "type": "slider",
+              "name": "foo",
+              "value": "0.8"
+            },
+            {
+              "type": "switch",
+              "name": "light",
+              "value": "true"
+            },
+            {
+              "type": "space",
+              "style": {
+                "height": "100"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
